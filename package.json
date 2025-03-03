@@ -69,5 +69,19 @@
     "eslint-config-next": "15.2.0",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.2",
+    "react-is": "^19.0.0",
+    "swr": {
+      "react": "^19.0.0"
+    },
+    "react-remove-scroll": {
+      "react": "^19.0.0"
+    },
+    "usehooks-ts": {
+      "react": "^19.0.0"
+    }
   }
 }
