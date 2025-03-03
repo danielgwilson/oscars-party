@@ -1,94 +1,157 @@
-<project>
-  <name>🎬 Oscars Party Game – Jackbox-Style Multiplayer Predictions 🎉</name>
+# 🎬 Oscars Party Game – Jackbox-Style Multiplayer Predictions 🎉  
 
-  <overview>
-    You are an expert full-stack web developer tasked with creating an interactive, real-time multiplayer Oscars prediction game. The game should resemble the seamless lobby-based multiplayer experience found in Jackbox party games. Players will join effortlessly via a unique four-letter code and compete by predicting Oscar winners live during the event. Real-time score updates, leaderboards, and mobile-first usability are essential.
-  </overview>
+**Version:** ULTIMATE EDITION™️  
 
-  <tech_stack>
-    - Next.js 15 with the App Router for server-side rendering and API handling
-    - TypeScript for robust type-safety and maintainability
-    - Tailwind CSS for rapid, responsive UI development
-    - Shadcn UI components
-    - Supabase Realtime for real-time data synchronization
-    - Vercel Edge Functions for low-latency backend interactions
-    - Optional: Zustand or SWR for efficient state management on client-side
-  </tech_stack>
+## **1. Overview**  
+You are a senior full-stack web developer building a **real-time multiplayer Oscars prediction game** inspired by Jackbox games. Players **join via a four-letter code**, predict Oscar winners, participate in **live AI-powered trivia**, and experience **real-time leaderboards and film insights** during the live Oscars ceremony.  
 
-  <requirements>
-    <core_features>
-      - **Game Lobby System**
-        - Generate unique, random four-letter lobby codes for each session
-        - Real-time player join/leave notifications
-        - Display dynamic player list visible to host and players
+## **2. Existing Setup**  
+- **Next.js 15 (App Router)** – SSR, API routes, and UI rendering  
+- **Tailwind CSS v4** – Responsive, modern styling  
+- **Shadcn UI** – Clean, component-based design  
+- **@supabase/ssr installed** – Used for real-time synchronization  
+- **Supabase credentials stored in `.env`**  
+- **`OPENAI_API_KEY` stored in `.env`** for AI-generated insights  
+- **Vercel Edge Functions available** for low-latency backend tasks  
 
-      - **Oscars Prediction Ballot**
-        - Simple, mobile-friendly UI allowing quick, intuitive category predictions (Best Picture, Director, Actor, Actress, Supporting Roles, etc.)
-        - Players submit ballots securely before the Oscars ceremony begins
-        - Auto-lock ballot submissions at a specified cutoff time (customizable by host)
+## **3. Tech Stack**  
+- **Next.js 15 (App Router)** – Server and client rendering  
+- **TypeScript** – Type safety and scalability  
+- **Tailwind CSS v4 + Shadcn UI** – UI components and styling  
+- **Supabase** – Realtime WebSockets + Postgres for live multiplayer sync  
+- **Vercel Edge Functions** – For fetching external APIs and real-time Oscars results  
+- **Zustand** – Simple, performant state management  
+- **OpenAI API** – AI-generated trivia and nominee insights  
+- **TMDb API** – Film images, director info, metadata  
+- **Wikipedia API** – Award category descriptions  
+- **Oscars Results Scraper** – Auto-fetches live winners from trusted news sources  
 
-      - **Real-Time Scoring & Leaderboard**
-        - As awards are announced live, host inputs winners quickly via a mobile or desktop interface
-        - Instantly update player scores in real-time across all devices
-        - Display an automatically updated leaderboard to create suspense and competition
+---
 
-      - **Responsive, Mobile-First Design**
-        - Fully responsive UI optimized for mobile browsers
-        - Clear, Hollywood-themed visuals and typography, emphasizing fun and excitement
+## **4. Core Features**  
+### **4.1. Instant Lobby System**  
+✅ **Four-letter unique lobby codes** generated automatically  
+✅ **Real-time player join/leave updates** (Supabase Realtime)  
+✅ **Live player list UI with avatars and fun stats**  
 
-      - **No Sign-up Required**
-        - Players join instantly using a lobby code; no user registration or login required
-        - Minimal friction for participation (similar UX to Jackbox games)
+### **4.2. Oscars Prediction Ballot**  
+✅ **Mobile-friendly category selection UI**  
+✅ **Auto-locking ballots before each category winner is announced**  
+✅ **Secure storage of player picks in Supabase**  
 
-      - **Fun & Social Interactions**
-        - Optional: Lighthearted chat or emoji reactions during live event
-        - Host-controlled bonus rounds or surprise questions for extra points
+### **4.3. Real-Time Scoring & Leaderboard**  
+✅ **Automated winner detection via real-time Oscars data scraping**  
+✅ **Backup: Manual host override if scraping fails**  
+✅ **Instant, animated leaderboard updates when winners are revealed**  
 
-    </core_features>
+### **4.4. Dynamic Trivia (Powered by OpenAI & TMDb)**  
+✅ **Before each award, generate category-specific trivia questions**  
+✅ **AI-generated, film-relevant trivia displayed in real time**  
+✅ **Bonus point rounds for fastest correct answers**  
 
-    <technical_features>
-      - Strong security practices to ensure game integrity
-      - Efficient real-time data handling via WebSockets (Supabase Realtime or equivalent)
-      - Easy deployment and scalability on Vercel
-      - Modular, maintainable TypeScript codebase following best practices
+### **4.5. Film Insights & AI-Generated Predictions**  
+✅ **Show nominee images, synopsis, director name (from TMDb)**  
+✅ **AI-generated “Why It’s Going to Win” insights (GPT-powered)**  
+✅ **Contextual award category explanations (via Wikipedia API)**  
 
-    </technical_features>
-  </requirements>
+### **4.6. Mobile-First, Immersive UI**  
+✅ **Oscars-themed Hollywood aesthetic**  
+✅ **Jackbox-style humor in UI copy & notifications**  
+✅ **Cinematic animations for score updates, predictions, and trivia**  
 
-  <prompt_instructions>
-    - First, clearly outline your approach, including:
-      1. Project file structure and initial setup steps
-      2. How you'll generate/manage unique lobby codes
-      3. Real-time connection and synchronization logic
-      4. UI components and routing logic in Next.js (app router)
+### **4.7. Social & Interactive Elements**  
+✅ **Emoji-react chat system for live reactions**  
+✅ **Mini-games and bonus rounds during commercials**  
+✅ **Live trivia leaderboards separate from main scoreboard**  
 
-    - After outlining the approach clearly, systematically build the codebase:
-      - Set up Next.js 15 application with required dependencies
-      - Implement lobby creation and player join logic
-      - Implement real-time WebSocket synchronization
-      - Build the prediction ballot interface with mobile-first UX
-      - Develop real-time scoring backend and leaderboard frontend
-      - Ensure styling with Tailwind CSS matches an Oscars/Hollywood aesthetic
+---
 
-    - Regularly explain reasoning and important implementation details. Confirm with me before executing major steps (e.g., installing dependencies, creating new files, running scripts).
+## **5. Data Architecture & APIs**  
+### **5.1. Supabase Schema**  
+- **`lobbies`** – Stores active game sessions (code, host, start time)  
+- **`players`** – Tracks players and their picks  
+- **`categories`** – Stores award categories, descriptions, historical facts  
+- **`nominees`** – Holds nominee data (film, director, metadata, TMDb image URL)  
+- **`winners`** – Updates in real time from scraping, triggering frontend updates  
+- **`trivia`** – AI-generated trivia stored for each category  
 
-    - Keep the code clean, modular, and thoroughly commented for easy review and maintainability.
-    
-    - After completing the core features, provide guidance on deployment to Vercel and handling scaling for potentially many concurrent users.
+### **5.2. Live Oscars Results (Real-Time Updates)**  
+**Primary Source:** Oscars API (if available)  
+**Backup:** Scraping Variety, IMDb, or official Oscars blog with headless browser  
+**Fallback:** Host manually selects winners from a dropdown  
 
-    - Provide a final README.md clearly documenting how to run, host, and manage the Oscars game.
-  </prompt_instructions>
+### **5.3. Film Images & Metadata**  
+✅ **TMDb API → Fetch nominee posters, director names, synopsis**  
+✅ **Store in Supabase to reduce API calls during event**  
 
-  <success_criteria>
-    - Game can be effortlessly hosted and joined by participants on Oscars night
-    - Real-time interactions function seamlessly without lag or synchronization issues
-    - Users enjoy an engaging, frictionless experience on mobile devices
-    - All code is clean, well-documented, modular, and production-quality
-  </success_criteria>
+### **5.4. Award Category Descriptions**  
+✅ **Wikipedia API → Fetch brief, factual award category explanations**  
+✅ **Store locally for faster retrieval during game**  
 
-  <claude_code_settings>
-    - Role: Senior Full-Stack Web Developer with expertise in real-time multiplayer games
-    - Tone: Professional, enthusiastic, and detailed-oriented
-    - Output Style: Clearly structured, step-by-step explanations followed by actionable, executable code
-  </claude_code_settings>
-</project>
+### **5.5. AI-Generated Predictions (OpenAI API)**  
+✅ **Pre-generate “Why It’s Going to Win” insights using GPT**  
+✅ **Prompt includes major precursor awards (Golden Globes, Critics’ Choice, etc.)**  
+✅ **Stored ahead of time in Supabase to minimize latency during live game**  
+
+---
+
+## **6. Technical Implementation Plan**  
+### **6.1. Step-by-Step Execution Plan**  
+1. **Set up Supabase tables** (lobbies, players, categories, nominees, winners, trivia)  
+2. **Build four-letter code lobby system** with WebSocket-powered live player list  
+3. **Develop real-time Oscars result polling via scraper + API fallback**  
+4. **Integrate TMDb API for film images & metadata**  
+5. **Build category UI with Wikipedia API descriptions**  
+6. **Develop live prediction ballot UX** (auto-locks when category winner is detected)  
+7. **Implement AI trivia & insights using OpenAI API**  
+8. **Deploy real-time updates via Supabase Realtime listeners**  
+9. **Add Vercel Edge Functions to handle scraping & API calls efficiently**  
+10. **Polish UI with animations, notifications, and cinematic effects**  
+
+### **6.2. Real-Time Data Flow**
+1. **Supabase Realtime WebSockets** → Instantly push updates for player joins, leaderboard changes, and trivia scores  
+2. **Vercel Edge Functions** → Scrape live Oscars results every 30s, push updates to Supabase  
+3. **Wikipedia & TMDb APIs** → Fetch educational content & film images  
+4. **OpenAI API** → Pre-generate nominee insights & trivia before game starts  
+5. **Frontend:** Next.js 15 UI subscribes to real-time changes  
+
+---
+
+## **7. Security & Performance Considerations**  
+✅ **Rate-limiting on API calls** to prevent excessive requests  
+✅ **Caching film data & award descriptions in Supabase** to reduce external API dependencies  
+✅ **Error handling for failed scrapes** (automatically reattempt, notify host)  
+✅ **Admin panel for emergency manual winner updates**  
+✅ **Supabase row-level security (RLS) to prevent unauthorized data access**  
+
+---
+
+## **8. Deployment & Scaling Strategy**  
+**Deployment:** Vercel (for Next.js frontend + Edge Functions)  
+**Database & Realtime:** Supabase (scalable Postgres with WebSocket listeners)  
+**Performance:**  
+✅ **Images & assets CDN-hosted via TMDb + Vercel static serving**  
+✅ **Serverless architecture ensures low-latency event performance**  
+
+---
+
+## **9. Success Criteria**  
+✅ **Game automatically updates within seconds of an Oscar winner announcement**  
+✅ **Players experience smooth, engaging, and interactive gameplay**  
+✅ **Trivia and film insights educate & entertain without feeling intrusive**  
+✅ **Game runs flawlessly on mobile & desktop during live event**  
+✅ **No major delays or crashes under high concurrent usage**  
+
+---
+
+## **10. Claude Code Instructions**  
+### **Expectations from Claude Code**  
+- **Clearly explain implementation strategy before coding**  
+- **Follow a structured, modular approach to building features**  
+- **Use TypeScript and best practices for scalability**  
+- **Ensure excellent documentation and maintainability**  
+- **Confirm critical milestones before executing major steps**  
+
+---
+
+🚀 **Let’s build the ultimate Oscars party experience!** 🌟🎥🏆  
