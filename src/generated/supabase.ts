@@ -208,6 +208,7 @@ export type Database = {
       }
       movies: {
         Row: {
+          backdrop_path: string | null
           created_at: string | null
           data: Json | null
           genres: string[] | null
@@ -219,6 +220,7 @@ export type Database = {
           tmdb_id: number | null
         }
         Insert: {
+          backdrop_path?: string | null
           created_at?: string | null
           data?: Json | null
           genres?: string[] | null
@@ -230,6 +232,7 @@ export type Database = {
           tmdb_id?: number | null
         }
         Update: {
+          backdrop_path?: string | null
           created_at?: string | null
           data?: Json | null
           genres?: string[] | null
@@ -251,6 +254,7 @@ export type Database = {
           id: string
           incorrect_answers: number | null
           is_host: boolean | null
+          is_ready: boolean | null
           lobby_id: string | null
           name: string
           score: number | null
@@ -264,6 +268,7 @@ export type Database = {
           id?: string
           incorrect_answers?: number | null
           is_host?: boolean | null
+          is_ready?: boolean | null
           lobby_id?: string | null
           name: string
           score?: number | null
@@ -277,6 +282,7 @@ export type Database = {
           id?: string
           incorrect_answers?: number | null
           is_host?: boolean | null
+          is_ready?: boolean | null
           lobby_id?: string | null
           name?: string
           score?: number | null

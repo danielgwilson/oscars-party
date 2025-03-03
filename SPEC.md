@@ -42,8 +42,8 @@ This is a **movie trivia game where AI adapts questions based on movies the play
 ### **3.4. AI-Generated Roasts & Commentary**
 - When a player **gets a question wrong, AI roasts them**
 - Examples:
-  - _"Danny, you claim to love sci-fi but just failed a *Blade Runner* question. Hand over your nerd card."_
-  - _"Yash, you missed a *Fast & Furious* question? You are now permanently banned from saying ‘family.’"_
+  - _"Danny, you claim to love sci-fi but just failed a _Blade Runner_ question. Hand over your nerd card."_
+  - _"Yash, you missed a _Fast & Furious_ question? You are now permanently banned from saying ‘family.’"_
 - AI tracks player performance and **customizes insults dynamically**
 
 ### **3.5. Movie Info & Insights**

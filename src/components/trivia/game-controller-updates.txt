@@ -1,0 +1,41 @@
+// Add this to the existing subscription listeners after the channel is created
+
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'lobbies',
+          filter: `id=eq.${lobbyId}`,
+        },
+        (payload) => {
+          console.log('Lobby update detected:', payload.new);
+          
+          // Check if game stage has changed to trivia_started
+          if (payload.new.game_stage === 'trivia_started' && gameStage === 'favorites') {
+            console.log('Game has officially started with trivia_started status');
+            setGameStage('trivia');
+            
+            // Fetch or refresh questions
+            supabase
+              .from('questions')
+              .select('*')
+              .eq('lobby_id', lobbyId)
+              .then(({ data, error }) => {
+                if (error) {
+                  console.error('Error fetching questions after game start:', error);
+                } else if (data && data.length > 0) {
+                  console.log(`Found ${data.length} questions after game start`);
+                  setQuestions(data);
+                } else {
+                  console.log('No questions found after game start, will retry');
+                }
+              });
+          }
+          
+          // The existing logic to check for game end
+          if (payload.new.ended_at && !payload.old.ended_at) {
+            setGameStage('final');
+          }
+        }
+      )

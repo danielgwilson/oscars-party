@@ -90,25 +90,13 @@ export default function CreateGame() {
     return result;
   };
 
-  // Seed the categories and nominees from the nominees.json data
+  // This method is now deprecated as the app has been pivoted to a movie trivia game
+  // Keep as a comment for reference
+  /* 
   const seedCategoriesAndNominees = async (lobbyId: string) => {
-    try {
-      const response = await fetch('/api/seed-data', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ lobbyId }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to seed data');
-      }
-    } catch (error) {
-      console.error('Error seeding data:', error);
-      // We'll continue anyway since the main lobby was created
-    }
+    // No longer needed for the movie trivia game
   };
+  */
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 flex items-center justify-center p-4">
@@ -118,7 +106,7 @@ export default function CreateGame() {
             Host a Movie Night Party
           </CardTitle>
           <CardDescription className="text-amber-200">
-            Create a new prediction and trivia game for your movie night
+            Create a new movie trivia game and roast your friends!
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleCreateLobby}>

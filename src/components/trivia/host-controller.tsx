@@ -239,33 +239,69 @@ export default function HostController({
     try {
       setIsGeneratingQuestions(true);
 
+      // Show a toast to let the user know this might take some time
+      toast.info('Generating trivia questions...', {
+        description: 'This might take a moment. Please wait.',
+        duration: 5000,
+      });
+
       // Check if we have enough favorite movies
       if (favoriteMovies.length < 1) {
         toast.error('Wait for players to submit their favorite movies');
         return;
       }
 
+      console.log('Calling API to generate questions for lobby:', lobbyId);
+
       // Call the API to generate questions
-      const response = await fetch('/api/trivia/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ lobbyId }),
-      });
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30-second timeout
 
-      if (!response.ok) {
-        throw new Error('Failed to generate questions');
+      try {
+        const response = await fetch('/api/trivia/generate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ lobbyId }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          console.error('API error response:', errorData);
+          throw new Error(
+            `Failed to generate questions: ${
+              errorData.error || response.statusText
+            }`
+          );
+        }
+
+        const result = await response.json();
+        console.log(`Questions generated: ${result.questions.length}`);
+
+        toast.success(
+          `Generated ${result.questions.length} questions for your game!`
+        );
+      } catch (fetchError) {
+        if ((fetchError as Error).name === 'AbortError') {
+          console.error('Question generation request timed out');
+          toast.error('Question generation timed out', {
+            description: 'The request took too long. Please try again.',
+          });
+        } else {
+          throw fetchError;
+        }
       }
-
-      const result = await response.json();
-
-      toast.success(
-        `Generated ${result.questions.length} questions for your game!`
-      );
     } catch (error) {
       console.error('Error generating questions:', error);
-      toast.error('Failed to generate trivia questions');
+      toast.error('Failed to generate trivia questions', {
+        description:
+          (error as Error).message ||
+          'Please check console for details and try again.',
+      });
     } finally {
       setIsGeneratingQuestions(false);
     }
@@ -285,6 +321,7 @@ export default function HostController({
         .from('lobbies')
         .update({
           started_at: new Date().toISOString(),
+          game_stage: 'trivia_started'
         })
         .eq('id', lobbyId);
 
@@ -294,6 +331,12 @@ export default function HostController({
 
       setGameStarted(true);
       toast.success('Game started! Players can now begin answering questions');
+      
+      // Force refresh to ensure we're showing the correct game view
+      // Add a slight delay to allow the DB update to propagate
+      setTimeout(() => {
+        router.refresh();
+      }, 500);
     } catch (error) {
       console.error('Error starting game:', error);
       toast.error('Failed to start the game');

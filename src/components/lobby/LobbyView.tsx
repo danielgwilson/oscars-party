@@ -46,6 +46,31 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
         return;
       }
     }
+    
+    // If we have a lobby ID and player ID, check if the game has already started
+    if (lobbyId && playerId) {
+      const checkGameStarted = async () => {
+        try {
+          const { data: initialLobbyData, error } = await supabase
+            .from('lobbies')
+            .select('started_at, game_stage')
+            .eq('id', lobbyId)
+            .single();
+            
+          if (error) throw error;
+          
+          // If game already started, redirect to game page
+          if (initialLobbyData.started_at) {
+            console.log('Game already started, redirecting to game page');
+            router.push(`/game/${lobbyCode}?player_id=${playerId}`);
+          }
+        } catch (err) {
+          console.error('Error checking game status:', err);
+        }
+      };
+      
+      checkGameStarted();
+    }
 
     // Fetch lobby details and players
     const fetchLobbyAndPlayers = async () => {
@@ -152,7 +177,10 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
           // If the game has started, redirect to game page
           if (payload.new.started_at && !lobby?.started_at) {
             console.log("Game started, redirecting to game page");
-            router.push(`/game/${lobbyCode}?player_id=${playerId}`);
+            // Add a small delay to ensure database updates are processed
+            setTimeout(() => {
+              router.push(`/game/${lobbyCode}?player_id=${playerId}`);
+            }, 500);
           }
         }
       )

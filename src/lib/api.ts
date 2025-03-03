@@ -1,5 +1,5 @@
 /**
- * API utilities for the Oscars Party app
+ * API utilities for the Movie Night Party app
  */
 
 /**
@@ -43,60 +43,108 @@ export async function joinGame(gameCode: string, playerName: string) {
 }
 
 /**
- * Makes a prediction for a category
+ * Submits favorite movies for a player
  */
-export async function makePrediction(playerId: string, categoryId: string, nomineeId: string) {
-  const response = await fetch('/api/make-prediction', {
+export async function submitFavoriteMovies(playerId: string, movies: string[]) {
+  const response = await fetch('/api/submit-favorites', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ playerId, categoryId, nomineeId }),
+    body: JSON.stringify({ playerId, movies }),
   });
   
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'Failed to save prediction');
+    throw new Error(errorData.error || 'Failed to save favorite movies');
   }
   
   return response.json();
 }
 
 /**
- * Locks a category so no further predictions can be made
+ * Generates trivia questions for a lobby
  */
-export async function lockCategory(categoryId: string) {
-  const response = await fetch('/api/lock-category', {
+export async function generateTrivia(lobbyId: string) {
+  const response = await fetch('/api/trivia/generate', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ categoryId }),
+    body: JSON.stringify({ lobbyId }),
   });
   
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'Failed to lock category');
+    throw new Error(errorData.error || 'Failed to generate trivia');
   }
   
   return response.json();
 }
 
 /**
- * Sets a nominee as the winner for a category
+ * Submits an answer to a trivia question
  */
-export async function setWinner(categoryId: string, nomineeId: string) {
-  const response = await fetch('/api/set-winner', {
+export async function submitAnswer(playerId: string, questionId: string, answer: string, answerTime: number) {
+  const response = await fetch('/api/submit-answer', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ categoryId, nomineeId }),
+    body: JSON.stringify({ playerId, questionId, answer, answerTime }),
   });
   
   if (!response.ok) {
     const errorData = await response.json();
-    throw new Error(errorData.error || 'Failed to set winner');
+    throw new Error(errorData.error || 'Failed to submit answer');
+  }
+  
+  return response.json();
+}
+
+/**
+ * Generates a roast for a wrong answer
+ */
+export async function generateRoast(playerId: string, questionId: string, playerName: string, 
+                                    question: string, wrongAnswer: string, correctAnswer: string) {
+  const response = await fetch('/api/roast/generate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ 
+      player_id: playerId, 
+      question_id: questionId,
+      player_name: playerName,
+      question,
+      wrong_answer: wrongAnswer,
+      correct_answer: correctAnswer
+    }),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to generate roast');
+  }
+  
+  return response.json();
+}
+
+/**
+ * Generates a final burn for the lobby
+ */
+export async function generateFinalBurn(lobbyId: string) {
+  const response = await fetch('/api/finalburn/generate', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ lobbyId }),
+  });
+  
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || 'Failed to generate final burn');
   }
   
   return response.json();

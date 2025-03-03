@@ -25,11 +25,15 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 interface GameControllerProps {
   lobbyId: string;
   player: Player;
+  isHost?: boolean;
+  lobbyCode?: string;
 }
 
 export default function GameController({
   lobbyId,
   player,
+  isHost = false,
+  lobbyCode = '',
 }: GameControllerProps) {
   // State
   const [gameStage, setGameStage] = useState<
@@ -74,6 +78,22 @@ export default function GameController({
       setIsLoading(true);
 
       try {
+        // Get the lobby status first to determine game stage
+        const { data: initialLobbyData, error: initialLobbyError } = await supabase
+          .from('lobbies')
+          .select('*')
+          .eq('id', lobbyId)
+          .single();
+          
+        if (initialLobbyError) {
+          console.error('Error fetching lobby:', initialLobbyError);
+        } else if (initialLobbyData && isMounted) {
+          // If the game has started but we don't have any questions, we need to wait
+          if (initialLobbyData.started_at && initialLobbyData.game_stage === 'trivia_started') {
+            setGameStage('trivia');
+          }
+        }
+        
         // Fetch players in lobby for leaderboard
         const { data: playersData, error: playersError } = await supabase
           .from('players')
@@ -97,22 +117,25 @@ export default function GameController({
         if (favoritesError) {
           console.error('Error fetching favorites:', favoritesError);
         } else if (favoritesData && favoritesData.length > 0 && isMounted) {
-          setGameStage('trivia');
+          // Only move to trivia stage if player has submitted favorites and we're not in a different stage already
+          if (gameStage === 'favorites') {
+            setGameStage('trivia');
+          }
           // We'll fetch questions in a separate useEffect
         }
 
         if (!isMounted) return;
 
         // Check if game is in final stage
-        const { data: lobbyData, error: lobbyError } = await supabase
+        const { data: endGameLobbyData, error: endGameLobbyError } = await supabase
           .from('lobbies')
           .select('*')
           .eq('id', lobbyId)
           .single();
 
-        if (lobbyError) {
-          console.error('Error fetching lobby:', lobbyError);
-        } else if (lobbyData && lobbyData.ended_at && isMounted) {
+        if (endGameLobbyError) {
+          console.error('Error fetching lobby end state:', endGameLobbyError);
+        } else if (endGameLobbyData && endGameLobbyData.ended_at && isMounted) {
           setGameStage('final');
           // We'll fetch final results in a separate useEffect
         }
@@ -135,7 +158,7 @@ export default function GameController({
       isMounted = false;
       // Channels are cleaned up in the subscription effect
     };
-  }, [lobbyId, player.id, supabase]);
+  }, [lobbyId, player.id, supabase, gameStage]);
 
   // Set up realtime subscriptions
   useEffect(() => {
@@ -214,6 +237,30 @@ export default function GameController({
           filter: `id=eq.${lobbyId}`,
         },
         (payload) => {
+          console.log('Lobby update detected:', payload.new);
+          
+          // Check if game stage has changed to trivia_started
+          if (payload.new.game_stage === 'trivia_started' && gameStage === 'favorites') {
+            console.log('Game has officially started with trivia_started status');
+            setGameStage('trivia');
+            
+            // Fetch or refresh questions
+            supabase
+              .from('questions')
+              .select('*')
+              .eq('lobby_id', lobbyId)
+              .then(({ data, error }) => {
+                if (error) {
+                  console.error('Error fetching questions after game start:', error);
+                } else if (data && data.length > 0) {
+                  console.log(`Found ${data.length} questions after game start`);
+                  setQuestions(data);
+                } else {
+                  console.log('No questions found after game start, will retry');
+                }
+              });
+          }
+          
           // Check if the game has ended
           if (payload.new.ended_at && !payload.old.ended_at) {
             setGameStage('final');
@@ -246,15 +293,20 @@ export default function GameController({
       console.log(`Cleaning up channel: ${channelName}`);
       supabase.removeChannel(channel);
     };
-  }, [lobbyId, player.id, supabase]);
+  }, [lobbyId, player.id, supabase, gameStage]);
 
   // Fetch questions for the game using useEffect
   useEffect(() => {
     if (lobbyId && player.id && gameStage === 'trivia') {
       let isMounted = true;
+      let timeoutId: ReturnType<typeof setTimeout>;
+      let retryCount = 0;
+      const MAX_RETRIES = 5;
 
       const fetchQuestions = async () => {
         try {
+          console.log(`Fetching questions for lobby ${lobbyId}, attempt ${retryCount + 1}`);
+          
           // Get questions for this lobby
           const { data: questionsData, error: questionsError } = await supabase
             .from('questions')
@@ -270,6 +322,7 @@ export default function GameController({
           if (!isMounted) return;
 
           if (questionsData && questionsData.length > 0) {
+            console.log(`Found ${questionsData.length} questions for lobby ${lobbyId}`);
             setQuestions(questionsData);
 
             // Fetch movie data for questions
@@ -346,6 +399,31 @@ export default function GameController({
                 setCurrentQuestionIndex(lastAnsweredIndex + 1);
               }
             }
+          } else if (questionsData && questionsData.length === 0) {
+            // No questions yet, set up retry if under the limit
+            if (retryCount < MAX_RETRIES && isMounted) {
+              console.log(`No questions yet, retrying in 5 seconds (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+              
+              // Clear any existing timeout
+              if (timeoutId) clearTimeout(timeoutId);
+              
+              // Incremental backoff for retries (5s, 10s, 15s, 20s, 25s)
+              const delay = 5000 + (retryCount * 5000);
+              
+              timeoutId = setTimeout(() => {
+                retryCount++;
+                if (isMounted) {
+                  fetchQuestions();
+                }
+              }, delay);
+            } else if (retryCount >= MAX_RETRIES && isMounted) {
+              // After max retries, show an error
+              console.error(`Failed to load questions after ${MAX_RETRIES} attempts`);
+              toast.error("Taking too long to generate questions", {
+                description: "The host may need to try generating questions again",
+                duration: 10000,
+              });
+            }
           }
         } catch (error) {
           if (isMounted) {
@@ -359,6 +437,7 @@ export default function GameController({
 
       return () => {
         isMounted = false;
+        if (timeoutId) clearTimeout(timeoutId);
       };
     }
   }, [lobbyId, player.id, supabase, gameStage]);
@@ -435,10 +514,12 @@ export default function GameController({
   // Handle favorite movies submission
   const handleFavoriteMoviesSubmit = async (movies: string[]) => {
     try {
-      // The movies are already inserted by the FavoriteMoviesInput component
-
-      // Request generation of questions if this is the first person to submit movies
-      // (Host will still need to manually start generating questions)
+      // The movies and player ready status are already handled by FavoriteMoviesInput component
+      
+      // Move to waiting for questions state - this will trigger the questions fetch in useEffect
+      setGameStage('trivia');
+      
+      // Check if questions have already been generated
       const { data: existingQuestions, error: questionsError } = await (
         supabase.from('questions').select('id').eq('lobby_id', lobbyId) as any
       ).limit(1);
@@ -446,16 +527,12 @@ export default function GameController({
       if (questionsError) {
         console.error('Error checking for existing questions:', questionsError);
       }
-
-      // Move to trivia stage - this will trigger the questions fetch in useEffect
-      setGameStage('trivia');
-      toast.success('Your favorites are submitted! Let the trivia begin!');
-
+      
+      // Only show waiting message if there are no questions yet
       if (!existingQuestions || existingQuestions.length === 0) {
-        // Notify host to generate questions
-        toast.info('Waiting for the host to generate trivia questions...', {
-          duration: 5000,
-        });
+        toast.success('Your favorites are submitted! Waiting for all players to be ready...');
+      } else {
+        toast.success('Your favorites are submitted! Let the trivia begin!');
       }
     } catch (error) {
       console.error('Error handling favorite movies submission:', error);
@@ -583,6 +660,9 @@ export default function GameController({
         playerName={player.name}
         playerId={player.id}
         onSubmit={handleFavoriteMoviesSubmit}
+        isHost={isHost}
+        playerCount={players.length}
+        lobbyId={lobbyId}
       />
     );
   }
@@ -616,9 +696,13 @@ export default function GameController({
         <div className="flex items-center justify-center min-h-screen bg-black text-amber-400">
           <div className="text-center p-6">
             <h2 className="text-xl font-bold mb-3">Waiting for questions...</h2>
-            <p>
+            <p className="mb-4">
               The AI is generating trivia based on everyone&apos;s favorite
               movies.
+            </p>
+            <div className="animate-spin h-10 w-10 border-4 border-amber-400 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-sm text-amber-300/70">
+              This may take a moment. Please wait...
             </p>
           </div>
         </div>

@@ -1,7 +1,7 @@
-import { createRouteHandlerClient } from '@supabase/ssr';
+import { createClient } from '@/utils/supabase/server';
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { Database } from '@/types';
+import { Database } from '@/generated/supabase';
+import { z } from 'zod';
 
 export const runtime = 'edge';
 
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       );
     }
     
-    const supabase = createRouteHandlerClient<Database>({ cookies });
+    const supabase = await createClient();
     
     // Get player's answer history for context
     const { data: answerHistory, error: historyError } = await supabase
@@ -59,17 +59,55 @@ export async function POST(req: NextRequest) {
       console.error('Error fetching question:', questionError);
     }
     
-    // In a real implementation, this would call OpenAI to generate a personalized roast
-    // For now, we'll generate a simple mock roast
-    const roastContent = generateMockRoast(
-      player_name,
-      question,
-      wrong_answer,
-      correct_answer,
-      favoriteMovies || [],
-      answerHistory || [],
-      questionData
-    );
+    // Define types from Supabase
+    type FavoriteMovie = Database['public']['Tables']['favorite_movies']['Row'];
+    type Answer = Database['public']['Tables']['answers']['Row'];
+    type Question = Database['public']['Tables']['questions']['Row'];
+    
+    let roastContent = '';
+    
+    // Try to use OpenAI if API key exists
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    
+    if (openaiApiKey) {
+      try {
+        // Generate a roast using OpenAI
+        roastContent = await generateOpenAIRoast(
+          player_name,
+          question,
+          wrong_answer,
+          correct_answer,
+          favoriteMovies as FavoriteMovie[] || [],
+          answerHistory as Answer[] || [],
+          questionData as Question,
+          openaiApiKey
+        );
+      } catch (aiError) {
+        console.error('Error generating roast with OpenAI:', aiError);
+        // Fallback to mock roast if AI generation fails
+        roastContent = generateMockRoast(
+          player_name,
+          question,
+          wrong_answer,
+          correct_answer,
+          favoriteMovies || [],
+          answerHistory || [],
+          questionData
+        );
+      }
+    } else {
+      // Use mock roast generator if no API key
+      console.log('OpenAI API key not set, using mock roast generator');
+      roastContent = generateMockRoast(
+        player_name,
+        question,
+        wrong_answer,
+        correct_answer,
+        favoriteMovies || [],
+        answerHistory || [],
+        questionData
+      );
+    }
     
     // Store the roast in the database
     const { data: roast, error: roastError } = await supabase
@@ -102,7 +140,85 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// Mock roast generator
+// OpenAI roast generator
+async function generateOpenAIRoast(
+  playerName: string,
+  question: string,
+  wrongAnswer: string,
+  correctAnswer: string,
+  favoriteMovies: Database['public']['Tables']['favorite_movies']['Row'][],
+  answerHistory: Database['public']['Tables']['answers']['Row'][],
+  questionData: Database['public']['Tables']['questions']['Row'],
+  apiKey: string
+): Promise<string> {
+  // Calculate how many mistakes the player has made
+  const mistakeCount = answerHistory.filter(a => !a.is_correct).length;
+  
+  // Get favorite movies for context
+  const favoriteMovieTitles = favoriteMovies.map(m => m.movie_title).join(', ');
+  
+  // Create system message
+  const systemMessage = `You are a hilarious but slightly mean movie trivia host. 
+Your job is to roast players when they get a question wrong. Make your roasts funny, movie-related, 
+and tailored to the specific player and question they got wrong. Keep responses under 120 characters.`;
+
+  // Create prompt with all context
+  const prompt = `The player ${playerName} just got a movie trivia question wrong.
+
+Question: "${question}"
+Their wrong answer: "${wrongAnswer}"
+The correct answer: "${correctAnswer}"
+
+Additional context:
+- This is their ${mistakeCount + 1}${mistakeCount === 0 ? 'st' : mistakeCount === 1 ? 'nd' : mistakeCount === 2 ? 'rd' : 'th'} incorrect answer
+${favoriteMovieTitles ? `- Their favorite movies include: ${favoriteMovieTitles}` : ''}
+${questionData.movie_id ? `- This question was about a movie they claimed to have watched` : ''}
+
+Generate a short, witty roast (max 120 characters) that playfully mocks their movie knowledge. 
+Be funny but not truly mean. Make specific references to their mistake if possible.`;
+
+  try {
+    // Call OpenAI API
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemMessage },
+          { role: 'user', content: prompt }
+        ],
+        temperature: 0.8,
+        max_tokens: 120
+      })
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('OpenAI API error:', errorText);
+      throw new Error(`OpenAI API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const content = data.choices[0]?.message?.content;
+    
+    if (!content) {
+      throw new Error('No content returned from OpenAI');
+    }
+    
+    // Clean up the response (remove quotes if present)
+    return content.replace(/^["'](.*)["']$/s, '$1').trim();
+  } catch (error) {
+    console.error('Error generating roast with OpenAI:', error);
+    // Throw the error up to be handled by the caller
+    throw error;
+  }
+}
+
+// Mock roast generator as fallback
 function generateMockRoast(
   playerName: string,
   question: string,

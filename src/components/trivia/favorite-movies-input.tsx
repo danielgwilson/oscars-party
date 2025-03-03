@@ -13,13 +13,19 @@ interface FavoriteMoviesInputProps {
   onSubmit: (movies: string[]) => void;
   maxMovies?: number;
   playerId: string;
+  isHost?: boolean;
+  playerCount?: number;
+  lobbyId?: string;
 }
 
 export default function FavoriteMoviesInput({
   playerName,
   onSubmit,
   maxMovies = 5,
-  playerId
+  playerId,
+  isHost = false,
+  playerCount = 0,
+  lobbyId
 }: FavoriteMoviesInputProps) {
   const supabase = createClient();
   const [favoriteMovies, setFavoriteMovies] = useState<string[]>([]);
@@ -74,9 +80,138 @@ export default function FavoriteMoviesInput({
         return;
       }
       
+      // Mark this player as ready
+      try {
+        const { error: playerUpdateError } = await supabase
+          .from('players')
+          .update({ is_ready: true })
+          .eq('id', playerId);
+          
+        if (playerUpdateError) {
+          // If the error is about the column not existing (during migration), just log and continue
+          if (playerUpdateError.message?.includes('column "is_ready" does not exist')) {
+            console.log("is_ready column not yet available - skipping player ready status");
+          } else {
+            console.error("Error marking player as ready:", playerUpdateError);
+          }
+        } else {
+          console.log("Player successfully marked as ready");
+        }
+      } catch (readyError) {
+        // Just log the error but don't block the flow
+        console.error("Exception marking player as ready:", readyError);
+      }
+      
+      // If host and all players are ready, generate questions
+      if (isHost && playerCount > 0 && lobbyId) {
+        try {
+          // First check if all players have submitted favorites by checking how many have favorite movies
+          // This works even if the is_ready column isn't available yet
+          // First get the players in this lobby
+          const { data: lobbyPlayers, error: lobbyPlayersError } = await supabase
+            .from('players')
+            .select('id')
+            .eq('lobby_id', lobbyId);
+            
+          if (lobbyPlayersError) {
+            console.error("Error fetching lobby players:", lobbyPlayersError);
+            return;
+          }
+          
+          // Now get all players who have submitted favorites
+          const { data: playersWithFavorites, error: favoritesError } = await supabase
+            .from('favorite_movies')
+            .select('player_id');
+            
+          // We need to filter because favorite_movies doesn't have lobby_id directly
+          // Get the set of player IDs in this lobby
+          const lobbyPlayerIds = new Set(
+            (lobbyPlayers || []).map(p => p.id)
+          );
+            
+          // Get unique player IDs who have submitted favorites and are in this lobby
+          const playerIds = new Set(
+            (playersWithFavorites || [])
+              .filter(f => f.player_id && lobbyPlayerIds.has(f.player_id))
+              .map(f => f.player_id)
+          );
+          
+          // Also try to get players marked as ready if that column exists
+          let readyPlayers = [];
+          try {
+            const { data, error: readyError } = await supabase
+              .from('players')
+              .select('id')
+              .eq('lobby_id', lobbyId)
+              .eq('is_ready', true);
+              
+            if (!readyError) {
+              readyPlayers = data || [];
+            }
+          } catch (readyQueryError) {
+            console.log("is_ready query failed, falling back to favorite movies check");
+          }
+          
+          // Determine if all players are ready - either by having submitted favorites (size of unique IDs)
+          // or by being marked as ready in the newer schema
+          const allPlayersReady = 
+            (playerIds.size === playerCount) || 
+            (readyPlayers.length > 0 && readyPlayers.length === playerCount);
+            
+          if (favoritesError) {
+            console.error("Error checking player favorites:", favoritesError);
+          } else if (allPlayersReady) {
+            // All players are ready - call the trivia generation API
+            toast.info("All players are ready! Generating questions...");
+          
+            try {
+              const response = await fetch('/api/trivia/generate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lobbyId })
+              });
+              
+              if (!response.ok) {
+                throw new Error("Failed to generate trivia questions");
+              }
+              
+              // Mark the game as started
+              const { error: startError } = await supabase
+                .from('lobbies')
+                .update({
+                  started_at: new Date().toISOString(),
+                  game_stage: 'trivia_started'
+                })
+                .eq('id', lobbyId);
+                
+              if (startError) {
+                console.error("Error starting game:", startError);
+                toast.error("Failed to start the game");
+              } else {
+                toast.success("Game started!");
+                
+                // Add a small delay and then call the onSubmit callback to advance our own UI
+                setTimeout(() => {
+                  onSubmit(favoriteMovies);
+                }, 1000);
+              }
+            } catch (genError) {
+              console.error("Error generating questions:", genError);
+              toast.error("Failed to generate questions. Please try again.");
+            }
+          } else {
+            toast.success("Your favorite movies are saved! Waiting for other players...");
+          }
+        } catch (checkError) {
+          console.error("Error checking player readiness:", checkError);
+          toast.success("Your favorite movies are saved! Waiting for other players...");
+        }
+      } else {
+        toast.success("Your favorite movies are saved! Waiting for other players...");
+      }
+      
       // Call parent callback
       onSubmit(favoriteMovies);
-      toast.success("Your favorite movies are saved!");
     } catch (err) {
       console.error("Error in handleSubmit:", err);
       toast.error("Something went wrong. Please try again.");

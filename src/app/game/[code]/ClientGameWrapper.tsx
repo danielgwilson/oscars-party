@@ -28,12 +28,13 @@ export default function ClientGameWrapper({
   lobbyCode,
   player,
 }: ClientGameWrapperProps) {
-  // Render host view or player view
-  if (isHost) {
-    return (
-      <HostController lobbyId={lobbyId} lobbyCode={lobbyCode} player={player} />
-    );
-  }
-
-  return <GameController lobbyId={lobbyId} player={player} />;
+  // Everyone uses the same GameController now
+  // We pass isHost flag so the controller can provide additional
+  // host-specific options if needed
+  return <GameController 
+    lobbyId={lobbyId} 
+    player={player} 
+    isHost={isHost}
+    lobbyCode={lobbyCode}
+  />;
 }

@@ -16,7 +16,8 @@ export default function DebugPage() {
     setError(null);
     
     try {
-      const response = await fetch('/api/create-lobby', {
+      // Using the current create-game endpoint instead of the deprecated create-lobby
+      const response = await fetch('/api/create-game', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,7 +72,7 @@ export default function DebugPage() {
         <TabsContent value="create">
           <Card>
             <CardHeader>
-              <CardTitle>Test Create Lobby</CardTitle>
+              <CardTitle>Test Create Game</CardTitle>
             </CardHeader>
             <CardContent>
               <Button 
