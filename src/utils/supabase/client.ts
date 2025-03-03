@@ -1,5 +1,5 @@
-import { Database } from "@/types/index";
-import { createBrowserClient } from "@supabase/ssr";
+import { Database } from '@/generated/supabase';
+import { createBrowserClient } from '@supabase/ssr';
 
 /**
  * Creates a Supabase client for use in the browser context.
@@ -13,44 +13,65 @@ export const createClient = () => {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
   } catch (error) {
-    console.error("Failed to create Supabase client:", error);
-    
+    console.error('Failed to create Supabase client:', error);
+
     // Return a simple mock client that will handle calls gracefully without crashing
     // This allows the app to load even if Supabase is temporarily unavailable
     return {
       from: () => ({
         select: () => ({
           eq: () => ({
-            single: async () => ({ data: null, error: { message: "Supabase connection failed" } }),
-            order: () => ({ data: [], error: { message: "Supabase connection failed" } }),
-            data: [], 
-            error: { message: "Supabase connection failed" },
+            single: async () => ({
+              data: null,
+              error: { message: 'Supabase connection failed' },
+            }),
+            order: () => ({
+              data: [],
+              error: { message: 'Supabase connection failed' },
+            }),
+            data: [],
+            error: { message: 'Supabase connection failed' },
           }),
-          order: () => ({ data: [], error: { message: "Supabase connection failed" } }),
-          data: [], 
-          error: { message: "Supabase connection failed" },
+          order: () => ({
+            data: [],
+            error: { message: 'Supabase connection failed' },
+          }),
+          data: [],
+          error: { message: 'Supabase connection failed' },
         }),
         insert: () => ({
           select: () => ({
-            single: async () => ({ data: null, error: { message: "Supabase connection failed" } }),
+            single: async () => ({
+              data: null,
+              error: { message: 'Supabase connection failed' },
+            }),
           }),
-          data: null, 
-          error: { message: "Supabase connection failed" },
+          data: null,
+          error: { message: 'Supabase connection failed' },
         }),
         update: () => ({
-          eq: () => ({ data: null, error: { message: "Supabase connection failed" } }),
-          data: null, 
-          error: { message: "Supabase connection failed" },
+          eq: () => ({
+            data: null,
+            error: { message: 'Supabase connection failed' },
+          }),
+          data: null,
+          error: { message: 'Supabase connection failed' },
         }),
         delete: () => ({
-          eq: () => ({ data: null, error: { message: "Supabase connection failed" } }),
-          data: null, 
-          error: { message: "Supabase connection failed" },
+          eq: () => ({
+            data: null,
+            error: { message: 'Supabase connection failed' },
+          }),
+          data: null,
+          error: { message: 'Supabase connection failed' },
         }),
         upsert: () => ({
-          onConflict: () => ({ data: null, error: { message: "Supabase connection failed" } }),
-          data: null, 
-          error: { message: "Supabase connection failed" },
+          onConflict: () => ({
+            data: null,
+            error: { message: 'Supabase connection failed' },
+          }),
+          data: null,
+          error: { message: 'Supabase connection failed' },
         }),
       }),
       channel: () => ({

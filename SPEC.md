@@ -1,96 +1,106 @@
-# Movie Night Party App Specification
+# 🎬 You Call Yourself a Movie Buff? – AI-Powered Movie Trivia & Roast Game
 
-## Overview
+## **1. Overview**
 
-Create a real-time multiplayer prediction and trivia game for movie nights and film award shows. Users join virtual "parties" where they make predictions about films, actors, and awards, and compete for points in real-time.
+**Project Type:** Multiplayer, real-time, AI-driven movie trivia & comedy game  
+**Pivot Notice:** This is a **complete pivot** from the previous Oscars prediction game. **All prior game logic, components, and APIs should be removed or cleaned up** as we are now building a fresh experience.
 
-## Core Features
+**Game Concept:**  
+This is a **movie trivia game where AI adapts questions based on movies the players know** and **roasts them mercilessly when they get answers wrong.** The goal is to make players laugh while keeping the game engaging, personal, and competitive.
 
-### Lobby System
-- Hosts create game lobbies with unique 4-letter codes
-- Players join using lobby code and username
-- Host controls game state (prediction phase, live phase)
-- Real-time list of connected players
-- Spectator mode for viewers who don't want to compete
+## **2. Tech Stack**
 
-### Prediction System
-- Multiple prediction categories available (awards, box office, movie ratings, etc.)
-- One category displayed per screen with clear options
-- Large tap targets with images for each option
-- Players swipe or tap to navigate between prediction categories
-- Visual progress indicator showing completion percentage
-- Optional category weighting (assign more points to categories)
-- Host can lock predictions when appropriate
+✅ **Next.js 15 (App Router)** – Handles routing, SSR, and API endpoints  
+✅ **TypeScript** – Type safety and scalability  
+✅ **Tailwind CSS v4 + Shadcn UI** – Responsive and stylish UI  
+✅ **Supabase** – Real-time WebSockets + Postgres for live multiplayer sync  
+✅ **Vercel Edge Functions** – Handles trivia fetching, AI interactions, and score updates  
+✅ **Zustand** – Simple, performant state management  
+✅ **OpenAI API** – Generates AI-driven roasts & trivia  
+✅ **TMDb API** – Fetches movie details & images  
+✅ **Wikipedia API** – Provides category & film insights  
 
-### Live Updates
-- Host marks correct answers in real-time as events occur
-- Scoring updates live on leaderboard
-- Player predictions revealed after each category is complete
-- Animation/visual effects for correct predictions
+---
 
-### Scoring & Leaderboard
-- Standard scoring: 1 point per correct prediction
-- Optional weighted scoring for difficulty
-- Real-time leaderboard showing rankings
-- Streak bonuses for consecutive correct answers
-- Achievement badges and visual rewards
-- Celebratory animations for points earned
-- Daily challenges and bonus opportunities
-- Visual indicators for position changes
+## **3. Core Features**
 
-### Trivia Rounds
-- Optional trivia questions about movies, actors, and film history
-- Full-screen card for each question (Duolingo-style)
-- Multiple choice format with large tap targets
-- Visual countdown timer for quick-answer bonus points
-- Immediate feedback with sound effects and animations
-- Streaks and combo mechanics for consecutive correct answers
-- Movie facts, behind-the-scenes info, and film history
-- Custom trivia packs for specific genres or franchises
+### **3.1. Instant Lobby System**
+- Players **join via a four-letter code** (Jackbox-style)
+- **Real-time player list updates** (Supabase Realtime)
+- Fun, movie-themed avatars
 
-## Technical Requirements
+### **3.2. Smart AI Trivia Engine**
+- **At game start, players enter their top 5 favorite movies**
+- AI generates **trivia questions tailored to what players actually know**
+- AI adapts **difficulty dynamically** based on correct/incorrect answers
 
-### Performance & UX Design
-- Support 2-50 concurrent users per lobby
-- Low latency (<2s) for real-time updates
-- Mobile-first portrait orientation design
-- Single-screen gameplay (no scrolling within activities)
-- Focus on one prediction/question at a time
-- Duolingo-inspired gamification elements
+### **3.3. Real-Time Scoring & Leaderboard**
+- **Live score updates via Supabase Realtime**
+- Streaks & multipliers for consecutive correct answers
+- AI keeps a **"Shame List" of movies players need to watch** if they miss too many questions
 
-### Data Model
-- User accounts (optional)
-- Lobbies with access codes
-- Categories and nominees
-- Player predictions
-- Live results
-- Trivia questions and answers
+### **3.4. AI-Generated Roasts & Commentary**
+- When a player **gets a question wrong, AI roasts them**
+- Examples:
+  - _"Danny, you claim to love sci-fi but just failed a *Blade Runner* question. Hand over your nerd card."_
+  - _"Yash, you missed a *Fast & Furious* question? You are now permanently banned from saying ‘family.’"_
+- AI tracks player performance and **customizes insults dynamically**
 
-### Security
-- Rate limiting for lobby creation
-- Appropriate database permissions
-- No sensitive user data collection
+### **3.5. Movie Info & Insights**
+- **Before each trivia round**, AI provides **fun facts about the featured movie**
+- **Pulls images, synopsis, and cast from TMDb API**
+- AI explains why **this movie is great—or why it sucks**
 
-### Deployment
-- Cloud hosting for reliability
-- Database with real-time capabilities
-- CI/CD pipeline with automated tests
+### **3.6. Social & Interactive Elements**
+- **Emoji-react chat system** for live reactions
+- AI generates **custom “Letterboxd-style” reviews** for each player’s performance
+- **“Final Burn”** – AI does a **grand roast of the worst-performing player at the end**
 
-## Future Enhancements
-- Historical stats for returning users
-- Social sharing of results
-- Custom categories and predictions
-- Theme customization for different movie genres
-- Chat functionality
-- Integrated viewing party features
-- Movie recommendation engine
-- Integration with movie rating APIs
-- Custom game templates for popular franchises
+---
 
-## Game Types
-- Award Show Predictions (Oscars, Golden Globes, etc.)
-- Movie Night Trivia
-- Box Office Battle (predict earnings)
-- Franchise Marathon (specific trivia for movie series)
-- Critics' Corner (predict critics' ratings)
-- Themed Movie Nights (horror, sci-fi, comedy, etc.)
+## **4. Data Architecture & APIs**
+
+### **4.1. Supabase Schema**
+- **`lobbies`** – Stores active games (code, host, start time)
+- **`players`** – Tracks players & their trivia accuracy
+- **`questions`** – Stores dynamically generated AI trivia
+- **`movies`** – Caches TMDb movie data for trivia
+- **`roasts`** – AI-generated insults for each player’s mistakes
+
+### **4.2. AI-Driven Features (OpenAI API)**
+- **Trivia Generation:** AI formulates questions based on **movies players actually know**
+- **Dynamic Roasts:** AI writes **customized insults based on player performance**
+- **Final Burn:** AI delivers **a brutal, but hilarious endgame summary**
+
+### **4.3. Real-Time Multiplayer (Supabase + Vercel Edge)**
+- **Supabase Realtime WebSockets** – Live updates for scores & chat
+- **Vercel Edge Functions** – AI trivia & roasts with minimal latency
+- **TMDb API** – Fetches movie posters, cast info, synopses
+
+---
+
+## **5. Implementation Plan**
+
+### **5.1. Step-by-Step Execution Plan**
+1. **Clean up old Oscars code** – Remove all legacy functionality
+2. **Set up new Supabase schema** – Lobbies, players, questions, roasts
+3. **Develop game lobby system** – Generate four-letter codes, track players
+4. **Integrate OpenAI trivia system** – Generate custom questions
+5. **Implement real-time scoring & leaderboard UI**
+6. **Build AI-powered roast system** – Dynamic responses to wrong answers
+7. **Develop final burn mechanic** – AI summarizes funniest game moments
+8. **Polish UI with animations, notifications, and cinematic effects**
+
+---
+
+## **6. Success Criteria**
+✅ **Game runs smoothly with live players**
+✅ **AI roasts are actually funny & engaging**
+✅ **Trivia dynamically adapts to player knowledge**
+✅ **Scoring, animations, and social elements work seamlessly**
+✅ **Easily expandable with future game modes**
+
+---
+
+### 🚀 **Let’s build this!**
+**Claude Code should implement this game in a modular way** so that **future game modes can be easily added later.** 🎥🔥

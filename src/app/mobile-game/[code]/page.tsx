@@ -5,7 +5,6 @@ import Loading from '@/components/game/Loading';
 
 interface GamePageProps {
   params: Promise<{ code: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export const metadata: Metadata = {
@@ -13,9 +12,8 @@ export const metadata: Metadata = {
   description: 'Make your predictions and play movie trivia',
 };
 
-export default async function MobileGamePage(props: GamePageProps) {
-  const params = await props.params;
-  const code = params.code;
+export default async function MobileGamePage({ params }: GamePageProps) {
+  const { code } = await params;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 flex flex-col items-center justify-center">

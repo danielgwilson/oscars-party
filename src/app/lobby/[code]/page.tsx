@@ -3,7 +3,6 @@ import LobbyView from '@/components/lobby/LobbyView';
 
 interface LobbyPageProps {
   params: Promise<{ code: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export const metadata: Metadata = {
@@ -11,9 +10,8 @@ export const metadata: Metadata = {
   description: 'Join the lobby and wait for the movie night to start',
 };
 
-export default async function LobbyPage(props: LobbyPageProps) {
-  const params = await props.params;
-  const code = params.code;
+export default async function LobbyPage({ params }: LobbyPageProps) {
+  const { code } = await params;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 flex flex-col items-center justify-center p-4">

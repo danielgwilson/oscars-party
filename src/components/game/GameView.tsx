@@ -308,7 +308,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
       supabase.removeChannel(nomineesChannel);
       supabase.removeChannel(predictionsChannel);
     };
-  }, [lobbyCode, router, supabase, isLoading]);
+  }, [lobbyCode, router, supabase, isLoading, categories, currentPlayer, predictions]);
 
   const handlePredictionChange = async (
     categoryId: string,

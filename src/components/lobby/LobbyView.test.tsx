@@ -16,8 +16,8 @@ vi.mock('@/utils/supabase/client', () => ({
       select: () => ({
         eq: () => ({
           single: () => ({ data: { id: 'lobby-123' }, error: null }),
+          order: (field, options) => ({ data: [], error: null }),
         }),
-        order: () => ({ data: [], error: null }),
       }),
       update: () => ({
         eq: () => ({ data: null, error: null }),

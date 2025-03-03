@@ -1,4 +1,7 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { 
   MobileCard, 
   MobileCardHeader, 
@@ -11,41 +14,39 @@ import {
 } from '../ui/mobile-view';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
-
-interface TriviaQuestion {
-  id: string;
-  question: string;
-  options: string[];
-  correctAnswer: string;
-  explanation?: string;
-  image_url?: string;
-  points: number;
-}
+import { Question, Roast, Movie } from '@/types';
 
 interface MobileTriviaViewProps {
-  question: TriviaQuestion;
+  question: Question;
+  roast?: Roast;
+  movie?: Movie;
   onAnswer: (answer: string) => void;
   streak: number;
   onNext: () => void;
   currentQuestionNumber: number;
   totalQuestions: number;
+  playerName: string;
 }
 
 export default function MobileTriviaView({
   question,
+  roast,
+  movie,
   onAnswer,
   streak,
   onNext,
   currentQuestionNumber,
-  totalQuestions
+  totalQuestions,
+  playerName
 }: MobileTriviaViewProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [showAnswer, setShowAnswer] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [showRoast, setShowRoast] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15); // 15 seconds to answer
   const [pointsEarned, setPointsEarned] = useState(0);
   
-  const isCorrect = selectedAnswer === question.correctAnswer;
+  const isCorrect = selectedAnswer === question.correct_answer;
   const progress = (currentQuestionNumber / totalQuestions) * 100;
   
   useEffect(() => {
@@ -53,6 +54,7 @@ export default function MobileTriviaView({
     setSelectedAnswer(null);
     setShowAnswer(false);
     setShowConfetti(false);
+    setShowRoast(false);
     setTimeLeft(15);
     setPointsEarned(0);
   }, [question]);
@@ -65,7 +67,7 @@ export default function MobileTriviaView({
     setShowAnswer(true);
     
     // Calculate points based on time left and if correct
-    if (answer === question.correctAnswer) {
+    if (answer === question.correct_answer) {
       const timeBonus = Math.floor(timeLeft * 2);
       const streakBonus = streak > 1 ? Math.min(streak * 5, 25) : 0;
       const totalPoints = question.points + timeBonus + streakBonus;
@@ -73,6 +75,11 @@ export default function MobileTriviaView({
       setPointsEarned(totalPoints);
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 2000);
+    } else {
+      // Show roast if incorrect and roast exists
+      if (roast) {
+        setTimeout(() => setShowRoast(true), 500);
+      }
     }
   };
   
@@ -95,6 +102,30 @@ export default function MobileTriviaView({
       />
       
       <MobileCardContent className="pb-20">
+        {/* Movie info if available */}
+        {movie && question.movie_id && !showAnswer && (
+          <div className="mb-5 p-3 rounded-lg bg-amber-950/40 flex items-center">
+            {movie.poster_path && (
+              <div className="w-14 h-20 flex-shrink-0 mr-3">
+                <Image 
+                  src={`https://image.tmdb.org/t/p/w92${movie.poster_path}`} 
+                  alt={movie.title}
+                  className="w-full h-full object-cover rounded"
+                  width={92}
+                  height={138}
+                />
+              </div>
+            )}
+            <div className="flex-1">
+              <h4 className="text-amber-400 font-medium text-sm">{movie.title}</h4>
+              <p className="text-amber-200/70 text-xs">
+                {movie.release_date && new Date(movie.release_date).getFullYear()} 
+                {movie.director && ` • Directed by ${movie.director}`}
+              </p>
+            </div>
+          </div>
+        )}
+        
         <div className="mb-4 flex justify-between items-center">
           <Badge className="bg-amber-600 text-white">
             {showAnswer ? 'Answer revealed' : `${timeLeft.toFixed(0)}s remaining`}
@@ -128,9 +159,9 @@ export default function MobileTriviaView({
               disabled={showAnswer && selectedAnswer !== option}
               onClick={() => handleSelectAnswer(option)}
               className={
-                showAnswer && option === question.correctAnswer
+                showAnswer && option === question.correct_answer
                   ? "bg-green-600/20 border-green-500"
-                  : showAnswer && selectedAnswer === option && option !== question.correctAnswer
+                  : showAnswer && selectedAnswer === option && option !== question.correct_answer
                   ? "bg-red-600/20 border-red-500"
                   : undefined
               }
@@ -140,11 +171,11 @@ export default function MobileTriviaView({
                   {option}
                 </div>
                 
-                {showAnswer && option === question.correctAnswer && (
+                {showAnswer && option === question.correct_answer && (
                   <Badge className="bg-green-600 ml-2">✓ Correct</Badge>
                 )}
                 
-                {showAnswer && selectedAnswer === option && option !== question.correctAnswer && (
+                {showAnswer && selectedAnswer === option && option !== question.correct_answer && (
                   <Badge className="bg-red-600 ml-2">✗ Incorrect</Badge>
                 )}
               </div>
@@ -152,6 +183,15 @@ export default function MobileTriviaView({
           ))}
         </div>
         
+        {/* AI Roast when answer is wrong */}
+        {showAnswer && !isCorrect && showRoast && roast && (
+          <div className="p-4 rounded-lg bg-red-950/30 border border-red-800/50 text-white mb-4 animate-fadeIn">
+            <p className="font-medium text-red-400 text-sm mb-1">AI Roast:</p>
+            <p className="italic">&quot;{roast.content}&quot;</p>
+          </div>
+        )}
+        
+        {/* Explanation */}
         {showAnswer && question.explanation && (
           <div className="p-3 rounded-lg bg-amber-900/20 text-amber-200 text-sm">
             <p className="font-medium text-amber-300 mb-1">Explanation:</p>
@@ -159,6 +199,7 @@ export default function MobileTriviaView({
           </div>
         )}
         
+        {/* Points earned */}
         {showAnswer && isCorrect && pointsEarned > 0 && (
           <div className="mt-4 text-center">
             <div className="text-amber-400 font-bold text-2xl animate-bounce">

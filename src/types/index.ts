@@ -3,81 +3,114 @@ export interface Lobby {
   id: string;
   code: string;
   host_id: string;
-  created_at: string;
-  started_at?: string;
-  ended_at?: string;
+  created_at: string | null;
+  started_at: string | null;
+  ended_at: string | null;
+  current_question_id: string | null;
+  game_stage: string | null;
+  config: any | null;
 }
 
 // Player represents a user in a lobby
 export interface Player {
   id: string;
-  lobby_id: string;
+  lobby_id: string | null;
   name: string;
-  avatar_url?: string;
-  score: number;
-  is_host: boolean;
-  created_at: string;
+  avatar_url: string | null;
+  score: number | null;
+  streak: number | null;
+  correct_answers: number | null;
+  incorrect_answers: number | null;
+  is_host: boolean | null;
+  created_at: string | null;
+  has_been_roasted: boolean | null;
 }
 
-// Category represents a prediction category (e.g., Best Picture)
-export interface Category {
+// Favorite Movies for a player
+export interface FavoriteMovie {
   id: string;
-  name: string;
-  description?: string;
-  order: number;
-  locked: boolean;
-  lobby_id: string;
+  player_id: string | null;
+  movie_title: string;
+  tmdb_id: number | null;
+  created_at: string | null;
 }
 
-// Nominee represents an option in a category (e.g., a film nominated for Best Picture)
-export interface Nominee {
+// Movie data cached from TMDb
+export interface Movie {
   id: string;
-  category_id: string;
-  name: string;
-  movie?: string;
-  image_url?: string;
-  director?: string;
-  producers?: string[];
-  country?: string;
-  is_winner?: boolean;
+  tmdb_id: number | null;
+  title: string;
+  poster_path: string | null;
+  release_date: string | null;
+  overview: string | null;
+  genres: string[] | null;
+  data: any | null;
+  created_at: string | null;
 }
 
-// Prediction represents a player's prediction for a category
-export interface Prediction {
+// Question represents a trivia question in the game
+export interface Question {
   id: string;
-  player_id: string;
-  category_id: string;
-  nominee_id: string;
-  created_at: string;
-  updated_at: string;
-}
-
-// TriviaQuestion represents a trivia question in the game
-export interface TriviaQuestion {
-  id: string;
-  category_id: string;
+  lobby_id: string | null;
   question: string;
   options: string[];
   correct_answer: string;
-  explanation?: string;
-  image_url?: string;
-  points: number;
+  explanation: string | null;
+  image_url: string | null;
+  movie_id: string | null;
+  difficulty: string | null;
+  points: number | null;
+  created_at: string | null;
 }
 
-// TriviaAnswer represents a player's answer to a trivia question
-export interface TriviaAnswer {
+// Answer represents a player's answer to a question
+export interface Answer {
   id: string;
-  player_id: string;
-  trivia_id: string;
+  player_id: string | null;
+  question_id: string | null;
   answer: string;
   is_correct: boolean;
-  answer_time: number; // milliseconds taken to answer
-  created_at: string;
+  answer_time: number;
+  created_at: string | null;
 }
 
-// Additional types for UI components
-export interface CategoryWithNominees extends Category {
-  nominees: Nominee[];
+// Roast represents an AI-generated roast for a player
+export interface Roast {
+  id: string;
+  player_id: string | null;
+  question_id: string | null;
+  content: string;
+  created_at: string | null;
+}
+
+// FinalBurn is the grand summary/roast at the end of a game
+export interface FinalBurn {
+  id: string;
+  lobby_id: string | null;
+  player_id: string | null;
+  content: string;
+  shame_list: string[];
+  created_at: string | null;
+}
+
+// ChatMessage for emoji reactions
+export interface ChatMessage {
+  id: string;
+  lobby_id: string | null;
+  player_id: string | null;
+  emoji: string;
+  reaction: string | null;
+  created_at: string | null;
+}
+
+// ShameList tracks movies players should watch
+export interface ShameMovie {
+  id: string;
+  player_id: string | null;
+  movie_title: string;
+  tmdb_id: number | null;
+  reason: string;
+  created_at: string | null;
 }
 
 // Define fallback type definition for Supabase
@@ -94,30 +127,45 @@ export type Database = {
         Insert: Omit<Player, 'created_at'>;
         Update: Partial<Omit<Player, 'id' | 'created_at'>>;
       };
-      categories: {
-        Row: Category;
-        Insert: Omit<Category, 'id'>;
-        Update: Partial<Omit<Category, 'id'>>;
+      favorite_movies: {
+        Row: FavoriteMovie;
+        Insert: Omit<FavoriteMovie, 'id' | 'created_at'>;
+        Update: Partial<Omit<FavoriteMovie, 'id' | 'created_at'>>;
       };
-      nominees: {
-        Row: Nominee;
-        Insert: Omit<Nominee, 'id'>;
-        Update: Partial<Omit<Nominee, 'id'>>;
+      movies: {
+        Row: Movie;
+        Insert: Omit<Movie, 'id' | 'created_at'>;
+        Update: Partial<Omit<Movie, 'id' | 'created_at'>>;
       };
-      predictions: {
-        Row: Prediction;
-        Insert: Omit<Prediction, 'id' | 'created_at' | 'updated_at'>;
-        Update: Partial<Omit<Prediction, 'id' | 'created_at' | 'updated_at'>>;
+      questions: {
+        Row: Question;
+        Insert: Omit<Question, 'id' | 'created_at'>;
+        Update: Partial<Omit<Question, 'id' | 'created_at'>>;
       };
-      trivia_questions: {
-        Row: TriviaQuestion;
-        Insert: Omit<TriviaQuestion, 'id'>;
-        Update: Partial<Omit<TriviaQuestion, 'id'>>;
+      answers: {
+        Row: Answer;
+        Insert: Omit<Answer, 'id' | 'created_at'>;
+        Update: Partial<Omit<Answer, 'id' | 'created_at'>>;
       };
-      trivia_answers: {
-        Row: TriviaAnswer;
-        Insert: Omit<TriviaAnswer, 'id' | 'created_at'>;
-        Update: Partial<Omit<TriviaAnswer, 'id' | 'created_at'>>;
+      roasts: {
+        Row: Roast;
+        Insert: Omit<Roast, 'id' | 'created_at'>;
+        Update: Partial<Omit<Roast, 'id' | 'created_at'>>;
+      };
+      final_burns: {
+        Row: FinalBurn;
+        Insert: Omit<FinalBurn, 'id' | 'created_at'>;
+        Update: Partial<Omit<FinalBurn, 'id' | 'created_at'>>;
+      };
+      chat_messages: {
+        Row: ChatMessage;
+        Insert: Omit<ChatMessage, 'id' | 'created_at'>;
+        Update: Partial<Omit<ChatMessage, 'id' | 'created_at'>>;
+      };
+      shame_movies: {
+        Row: ShameMovie;
+        Insert: Omit<ShameMovie, 'id' | 'created_at'>;
+        Update: Partial<Omit<ShameMovie, 'id' | 'created_at'>>;
       };
     };
   };

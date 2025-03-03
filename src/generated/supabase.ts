@@ -7,117 +7,73 @@ export type Json =
   | Json[]
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never
-    }
-    Views: {
-      [_ in never]: never
-    }
-    Functions: {
-      graphql: {
-        Args: {
-          operationName?: string
-          query?: string
-          variables?: Json
-          extensions?: Json
-        }
-        Returns: Json
-      }
-    }
-    Enums: {
-      [_ in never]: never
-    }
-    CompositeTypes: {
-      [_ in never]: never
-    }
-  }
   public: {
     Tables: {
-      ai_insights: {
+      answers: {
         Row: {
-          content: string
+          answer: string
+          answer_time: number
           created_at: string | null
           id: string
-          nominee_id: string | null
+          is_correct: boolean
+          player_id: string | null
+          question_id: string | null
         }
         Insert: {
-          content: string
+          answer: string
+          answer_time: number
           created_at?: string | null
           id?: string
-          nominee_id?: string | null
+          is_correct: boolean
+          player_id?: string | null
+          question_id?: string | null
         }
         Update: {
-          content?: string
+          answer?: string
+          answer_time?: number
           created_at?: string | null
           id?: string
-          nominee_id?: string | null
+          is_correct?: boolean
+          player_id?: string | null
+          question_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "ai_insights_nominee_id_fkey"
-            columns: ["nominee_id"]
+            foreignKeyName: "answers_player_id_fkey"
+            columns: ["player_id"]
             isOneToOne: false
-            referencedRelation: "nominees"
+            referencedRelation: "players"
             referencedColumns: ["id"]
           },
-        ]
-      }
-      categories: {
-        Row: {
-          description: string | null
-          id: string
-          lobby_id: string | null
-          locked: boolean | null
-          name: string
-          order: number
-        }
-        Insert: {
-          description?: string | null
-          id?: string
-          lobby_id?: string | null
-          locked?: boolean | null
-          name: string
-          order: number
-        }
-        Update: {
-          description?: string | null
-          id?: string
-          lobby_id?: string | null
-          locked?: boolean | null
-          name?: string
-          order?: number
-        }
-        Relationships: [
           {
-            foreignKeyName: "categories_lobby_id_fkey"
-            columns: ["lobby_id"]
+            foreignKeyName: "answers_question_id_fkey"
+            columns: ["question_id"]
             isOneToOne: false
-            referencedRelation: "lobbies"
+            referencedRelation: "questions"
             referencedColumns: ["id"]
           },
         ]
       }
       chat_messages: {
         Row: {
-          content: string
           created_at: string | null
+          emoji: string
           id: string
           lobby_id: string | null
           player_id: string | null
           reaction: string | null
         }
         Insert: {
-          content: string
           created_at?: string | null
+          emoji: string
           id?: string
           lobby_id?: string | null
           player_id?: string | null
           reaction?: string | null
         }
         Update: {
-          content?: string
           created_at?: string | null
+          emoji?: string
           id?: string
           lobby_id?: string | null
           player_id?: string | null
@@ -140,104 +96,191 @@ export type Database = {
           },
         ]
       }
+      favorite_movies: {
+        Row: {
+          created_at: string | null
+          id: string
+          movie_title: string
+          player_id: string | null
+          tmdb_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          movie_title: string
+          player_id?: string | null
+          tmdb_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          movie_title?: string
+          player_id?: string | null
+          tmdb_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorite_movies_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      final_burns: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          lobby_id: string | null
+          player_id: string | null
+          shame_list: string[]
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          lobby_id?: string | null
+          player_id?: string | null
+          shame_list: string[]
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          lobby_id?: string | null
+          player_id?: string | null
+          shame_list?: string[]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "final_burns_lobby_id_fkey"
+            columns: ["lobby_id"]
+            isOneToOne: false
+            referencedRelation: "lobbies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "final_burns_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lobbies: {
         Row: {
           code: string
+          config: Json | null
           created_at: string | null
+          current_question_id: string | null
           ended_at: string | null
+          game_stage: string | null
           host_id: string
           id: string
           started_at: string | null
         }
         Insert: {
           code: string
+          config?: Json | null
           created_at?: string | null
+          current_question_id?: string | null
           ended_at?: string | null
+          game_stage?: string | null
           host_id: string
           id?: string
           started_at?: string | null
         }
         Update: {
           code?: string
+          config?: Json | null
           created_at?: string | null
+          current_question_id?: string | null
           ended_at?: string | null
+          game_stage?: string | null
           host_id?: string
           id?: string
           started_at?: string | null
         }
         Relationships: []
       }
-      nominees: {
+      movies: {
         Row: {
-          category_id: string | null
-          country: string | null
-          director: string | null
+          created_at: string | null
+          data: Json | null
+          genres: string[] | null
           id: string
-          image_url: string | null
-          is_winner: boolean | null
-          movie: string | null
-          name: string
-          producers: string[] | null
+          overview: string | null
+          poster_path: string | null
+          release_date: string | null
+          title: string
+          tmdb_id: number | null
         }
         Insert: {
-          category_id?: string | null
-          country?: string | null
-          director?: string | null
+          created_at?: string | null
+          data?: Json | null
+          genres?: string[] | null
           id?: string
-          image_url?: string | null
-          is_winner?: boolean | null
-          movie?: string | null
-          name: string
-          producers?: string[] | null
+          overview?: string | null
+          poster_path?: string | null
+          release_date?: string | null
+          title: string
+          tmdb_id?: number | null
         }
         Update: {
-          category_id?: string | null
-          country?: string | null
-          director?: string | null
+          created_at?: string | null
+          data?: Json | null
+          genres?: string[] | null
           id?: string
-          image_url?: string | null
-          is_winner?: boolean | null
-          movie?: string | null
-          name?: string
-          producers?: string[] | null
+          overview?: string | null
+          poster_path?: string | null
+          release_date?: string | null
+          title?: string
+          tmdb_id?: number | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "nominees_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       players: {
         Row: {
           avatar_url: string | null
+          correct_answers: number | null
           created_at: string | null
+          has_been_roasted: boolean | null
           id: string
+          incorrect_answers: number | null
           is_host: boolean | null
           lobby_id: string | null
           name: string
           score: number | null
+          streak: number | null
         }
         Insert: {
           avatar_url?: string | null
+          correct_answers?: number | null
           created_at?: string | null
+          has_been_roasted?: boolean | null
           id?: string
+          incorrect_answers?: number | null
           is_host?: boolean | null
           lobby_id?: string | null
           name: string
           score?: number | null
+          streak?: number | null
         }
         Update: {
           avatar_url?: string | null
+          correct_answers?: number | null
           created_at?: string | null
+          has_been_roasted?: boolean | null
           id?: string
+          incorrect_answers?: number | null
           is_host?: boolean | null
           lobby_id?: string | null
           name?: string
           score?: number | null
+          streak?: number | null
         }
         Relationships: [
           {
@@ -249,131 +292,126 @@ export type Database = {
           },
         ]
       }
-      predictions: {
+      questions: {
         Row: {
-          category_id: string | null
-          created_at: string | null
-          id: string
-          nominee_id: string | null
-          player_id: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          category_id?: string | null
-          created_at?: string | null
-          id?: string
-          nominee_id?: string | null
-          player_id?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          category_id?: string | null
-          created_at?: string | null
-          id?: string
-          nominee_id?: string | null
-          player_id?: string | null
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "predictions_category_id_fkey"
-            columns: ["category_id"]
-            isOneToOne: false
-            referencedRelation: "categories"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "predictions_nominee_id_fkey"
-            columns: ["nominee_id"]
-            isOneToOne: false
-            referencedRelation: "nominees"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "predictions_player_id_fkey"
-            columns: ["player_id"]
-            isOneToOne: false
-            referencedRelation: "players"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      trivia_answers: {
-        Row: {
-          answer: string
-          answer_time: number
-          created_at: string | null
-          id: string
-          is_correct: boolean
-          player_id: string | null
-          trivia_id: string | null
-        }
-        Insert: {
-          answer: string
-          answer_time: number
-          created_at?: string | null
-          id?: string
-          is_correct: boolean
-          player_id?: string | null
-          trivia_id?: string | null
-        }
-        Update: {
-          answer?: string
-          answer_time?: number
-          created_at?: string | null
-          id?: string
-          is_correct?: boolean
-          player_id?: string | null
-          trivia_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "trivia_answers_player_id_fkey"
-            columns: ["player_id"]
-            isOneToOne: false
-            referencedRelation: "players"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "trivia_answers_trivia_id_fkey"
-            columns: ["trivia_id"]
-            isOneToOne: false
-            referencedRelation: "trivia_questions"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      trivia_questions: {
-        Row: {
-          category_id: string | null
           correct_answer: string
+          created_at: string | null
+          difficulty: string | null
           explanation: string | null
           id: string
+          image_url: string | null
+          lobby_id: string | null
+          movie_id: string | null
           options: string[]
+          points: number | null
           question: string
         }
         Insert: {
-          category_id?: string | null
           correct_answer: string
+          created_at?: string | null
+          difficulty?: string | null
           explanation?: string | null
           id?: string
+          image_url?: string | null
+          lobby_id?: string | null
+          movie_id?: string | null
           options: string[]
+          points?: number | null
           question: string
         }
         Update: {
-          category_id?: string | null
           correct_answer?: string
+          created_at?: string | null
+          difficulty?: string | null
           explanation?: string | null
           id?: string
+          image_url?: string | null
+          lobby_id?: string | null
+          movie_id?: string | null
           options?: string[]
+          points?: number | null
           question?: string
         }
         Relationships: [
           {
-            foreignKeyName: "trivia_questions_category_id_fkey"
-            columns: ["category_id"]
+            foreignKeyName: "questions_lobby_id_fkey"
+            columns: ["lobby_id"]
             isOneToOne: false
-            referencedRelation: "categories"
+            referencedRelation: "lobbies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      roasts: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          player_id: string | null
+          question_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          player_id?: string | null
+          question_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          player_id?: string | null
+          question_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "roasts_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "roasts_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shame_movies: {
+        Row: {
+          created_at: string | null
+          id: string
+          movie_title: string
+          player_id: string | null
+          reason: string
+          tmdb_id: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          movie_title: string
+          player_id?: string | null
+          reason: string
+          tmdb_id?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          movie_title?: string
+          player_id?: string | null
+          reason?: string
+          tmdb_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shame_movies_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
             referencedColumns: ["id"]
           },
         ]

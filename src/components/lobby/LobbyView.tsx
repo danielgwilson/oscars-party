@@ -35,11 +35,16 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
   useEffect(() => {
     const playerId = localStorage.getItem('oscarsPartyPlayerId');
     const lobbyId = localStorage.getItem('oscarsPartyLobbyId');
+    const lobbyCodeFromStorage = localStorage.getItem('oscarsPartyLobbyCode');
 
+    // Only redirect if we're not coming from the create page and have no stored data
     if (!playerId || !lobbyId) {
-      // If no player or lobby info in localStorage, redirect to join page
-      router.push('/join');
-      return;
+      if (lobbyCodeFromStorage !== lobbyCode) {
+        // If no player or lobby info in localStorage, redirect to join page
+        console.log('No player or lobby info found, redirecting to join page');
+        router.push(`/join?code=${lobbyCode}`);
+        return;
+      }
     }
 
     // Fetch lobby details and players
@@ -73,7 +78,7 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
             .from('players')
             .select('*')
             .eq('lobby_id', lobbyId)
-            .order('created_at');
+            .order('created_at', { ascending: true });
   
           if (playersError) throw new Error(playersError.message);
           setPlayers(playersData);
@@ -102,9 +107,12 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
 
     fetchLobbyAndPlayers();
 
-    // Subscribe to player changes
-    const playersChannel = supabase
-      .channel('lobby-players')
+    // Create a single channel for all subscriptions
+    const channelName = `lobby-${lobbyCode}-${Date.now()}`;
+    
+    // Setup a single channel with multiple listeners
+    const channel = supabase
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -130,11 +138,6 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
           }
         }
       )
-      .subscribe();
-
-    // Subscribe to lobby status changes
-    const lobbyChannel = supabase
-      .channel('lobby-status')
       .on(
         'postgres_changes',
         {
@@ -148,18 +151,23 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
 
           // If the game has started, redirect to game page
           if (payload.new.started_at && !lobby?.started_at) {
-            router.push(`/game/${lobbyCode}`);
+            console.log("Game started, redirecting to game page");
+            router.push(`/game/${lobbyCode}?player_id=${playerId}`);
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log(`Subscribed to channel: ${channelName}`);
+        }
+      });
 
     // Cleanup on unmount
     return () => {
-      supabase.removeChannel(playersChannel);
-      supabase.removeChannel(lobbyChannel);
+      console.log(`Cleaning up channel: ${channelName}`);
+      supabase.removeChannel(channel);
     };
-  }, [lobbyCode, router, supabase, lobby?.started_at]);
+  }, [lobbyCode, router, supabase, lobby?.started_at, lobby, currentPlayer]);
 
   const handleStartGame = async () => {
     if (!isHost) return;
@@ -168,9 +176,14 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
 
     try {
       const lobbyId = localStorage.getItem('oscarsPartyLobbyId');
+      const playerId = localStorage.getItem('oscarsPartyPlayerId');
 
       if (!lobbyId) {
         throw new Error('Missing lobby ID');
+      }
+
+      if (!playerId) {
+        throw new Error('Missing player ID');
       }
 
       // Update the lobby to mark it as started
@@ -183,7 +196,8 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
 
       if (error) throw new Error(error.message);
 
-      router.push(`/game/${lobbyCode}`);
+      // Redirect with player_id in the URL
+      router.push(`/game/${lobbyCode}?player_id=${playerId}`);
     } catch (error) {
       console.error('Error starting game:', error);
       toast.error('Failed to start game', {

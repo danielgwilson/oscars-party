@@ -1,111 +1,122 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import CategoryView from './CategoryView';
-import { CategoryWithNominees } from '@/types';
+import MobileTriviaView from '@/components/trivia/mobile-trivia-view';
+import { Question, Movie, Roast } from '@/types';
 
 // Mock data for testing
-const mockCategory: CategoryWithNominees = {
-  id: 'cat-123',
+const mockQuestion: Question = {
+  id: 'q-123',
   lobby_id: 'lobby-456',
-  name: 'Best Picture',
-  order: 1,
-  locked: false,
-  nominees: [
-    {
-      id: 'nom-1',
-      category_id: 'cat-123',
-      name: 'Movie 1',
-      movie: 'Movie 1',
-    },
-    {
-      id: 'nom-2',
-      category_id: 'cat-123',
-      name: 'Movie 2',
-      movie: 'Movie 2',
-    },
-  ],
+  question: 'Which actor played Iron Man in the MCU?',
+  options: ['Robert Downey Jr.', 'Chris Evans', 'Chris Hemsworth', 'Mark Ruffalo'],
+  correct_answer: 'Robert Downey Jr.',
+  difficulty: 'easy',
+  points: 100,
+  created_at: new Date().toISOString()
 };
 
-const lockedCategory: CategoryWithNominees = {
-  ...mockCategory,
-  locked: true,
+const mockMovie: Movie = {
+  id: 'm-123',
+  tmdb_id: 1234,
+  title: 'Iron Man',
+  poster_path: '/poster.jpg',
+  director: 'Jon Favreau',
+  genres: ['Action', 'Adventure', 'Sci-Fi'],
+  created_at: new Date().toISOString()
 };
 
-describe('CategoryView', () => {
-  it('should render category name', () => {
+const mockRoast: Roast = {
+  id: 'r-123',
+  player_id: 'player-123',
+  question_id: 'q-123',
+  content: "Wow, you don't know who played Iron Man? Next you'll tell me you think Star Wars is set in the future!",
+  created_at: new Date().toISOString()
+};
+
+describe('MobileTriviaView', () => {
+  it('should render question text', () => {
     render(
-      <CategoryView
-        category={mockCategory}
-        onSelect={() => {}}
-        onLockCategory={() => {}}
-        onSetWinner={() => {}}
-        isHost={false}
+      <MobileTriviaView
+        question={mockQuestion}
+        onAnswer={() => {}}
+        onNext={() => {}}
+        currentQuestionNumber={1}
+        totalQuestions={10}
+        streak={0}
+        playerName="TestPlayer"
       />
     );
     
-    expect(screen.getByText('Best Picture')).toBeInTheDocument();
+    expect(screen.getByText('Which actor played Iron Man in the MCU?')).toBeInTheDocument();
   });
   
-  it('should render nominees', () => {
+  it('should render answer options', () => {
     render(
-      <CategoryView
-        category={mockCategory}
-        onSelect={() => {}}
-        onLockCategory={() => {}}
-        onSetWinner={() => {}}
-        isHost={false}
+      <MobileTriviaView
+        question={mockQuestion}
+        onAnswer={() => {}}
+        onNext={() => {}}
+        currentQuestionNumber={1}
+        totalQuestions={10}
+        streak={0}
+        playerName="TestPlayer"
       />
     );
     
-    expect(screen.getAllByText('Movie 1')[0]).toBeInTheDocument();
-    expect(screen.getAllByText('Movie 2')[0]).toBeInTheDocument();
+    expect(screen.getByText('Robert Downey Jr.')).toBeInTheDocument();
+    expect(screen.getByText('Chris Evans')).toBeInTheDocument();
+    expect(screen.getByText('Chris Hemsworth')).toBeInTheDocument();
+    expect(screen.getByText('Mark Ruffalo')).toBeInTheDocument();
   });
   
-  it('should call onSelect when nominee is clicked', () => {
-    const onSelectMock = vi.fn();
+  it('should call onAnswer when an option is clicked', () => {
+    const onAnswerMock = vi.fn();
     
     render(
-      <CategoryView
-        category={mockCategory}
-        onSelect={onSelectMock}
-        onLockCategory={() => {}}
-        onSetWinner={() => {}}
-        isHost={false}
+      <MobileTriviaView
+        question={mockQuestion}
+        onAnswer={onAnswerMock}
+        onNext={() => {}}
+        currentQuestionNumber={1}
+        totalQuestions={10}
+        streak={0}
+        playerName="TestPlayer"
       />
     );
     
-    fireEvent.click(screen.getAllByText('Movie 1')[0].closest('.cursor-pointer')!);
-    expect(onSelectMock).toHaveBeenCalledWith('nom-1');
+    fireEvent.click(screen.getByText('Robert Downey Jr.'));
+    expect(onAnswerMock).toHaveBeenCalledWith('Robert Downey Jr.');
   });
   
-  it('should not call onSelect when nominee is clicked if category is locked', () => {
-    const onSelectMock = vi.fn();
-    
+  it('should show streak counter', () => {
     render(
-      <CategoryView
-        category={lockedCategory}
-        onSelect={onSelectMock}
-        onLockCategory={() => {}}
-        onSetWinner={() => {}}
-        isHost={false}
+      <MobileTriviaView
+        question={mockQuestion}
+        onAnswer={() => {}}
+        onNext={() => {}}
+        currentQuestionNumber={1}
+        totalQuestions={10}
+        streak={3}
+        playerName="TestPlayer"
       />
     );
     
-    fireEvent.click(screen.getAllByText('Movie 1')[0].closest('.cursor-pointer')!);
-    expect(onSelectMock).not.toHaveBeenCalled();
+    expect(screen.getByText('3')).toBeInTheDocument();
   });
   
-  it('should show host controls when isHost is true', () => {
+  it('should show question progress indicator', () => {
     render(
-      <CategoryView
-        category={mockCategory}
-        onSelect={() => {}}
-        onLockCategory={() => {}}
-        onSetWinner={() => {}}
-        isHost={true}
+      <MobileTriviaView
+        question={mockQuestion}
+        onAnswer={() => {}}
+        onNext={() => {}}
+        currentQuestionNumber={2}
+        totalQuestions={5}
+        streak={0}
+        playerName="TestPlayer"
       />
     );
     
-    expect(screen.getByText('Lock Voting')).toBeInTheDocument();
+    expect(screen.getByText('Question 2 of 5')).toBeInTheDocument();
   });
 });

@@ -42,6 +42,8 @@ export async function POST(request: NextRequest) {
       .insert({
         code,
         host_id: hostId,
+        game_stage: 'lobby', // Initialize with lobby stage
+        config: { question_count: 10, time_limit: 20 } // Default game config
       })
       .select()
       .single();
@@ -64,6 +66,10 @@ export async function POST(request: NextRequest) {
         name: hostName,
         is_host: true,
         score: 0,
+        streak: 0,
+        correct_answers: 0,
+        incorrect_answers: 0,
+        has_been_roasted: false
       })
       .select()
       .single();
@@ -78,19 +84,8 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Seed categories and nominees
-    try {
-      await fetch(`${request.nextUrl.origin}/api/seed-data`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ lobbyId: lobby.id }),
-      });
-    } catch (seedError) {
-      console.error('Error seeding data:', seedError);
-      // Continue anyway, the main game is created
-    }
+    // Seed data is no longer needed for the movie trivia game
+    // We'll generate trivia later when players submit their favorite movies
     
     return NextResponse.json(
       {

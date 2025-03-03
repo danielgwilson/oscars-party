@@ -161,11 +161,19 @@ export default function MobileGameView({ lobbyCode }: MobileGameViewProps) {
     };
 
     fetchGameData();
-    setupRealtimeSubscriptions(playerId, lobbyId);
+    // Note: setupRealtimeSubscriptions was moved to its own useEffect
     
   }, [lobbyCode, router, supabase, isLoading]);
   
-  const setupRealtimeSubscriptions = (playerId: string, lobbyId: string) => {
+  // Move setupRealtimeSubscriptions into useEffect to fix dependency issue
+  useEffect(() => {
+    if (!isLoading && lobbyCode) {
+      const playerId = localStorage.getItem('oscarsPartyPlayerId');
+      const lobbyId = localStorage.getItem('oscarsPartyLobbyId');
+      
+      if (playerId && lobbyId) {
+        // Setup realtime subscriptions
+        const setupRealtimeSubscriptions = () => {
     // Subscribe to player changes for leaderboard updates
     const playersChannel = supabase
       .channel('game-players')
@@ -207,6 +215,17 @@ export default function MobileGameView({ lobbyCode }: MobileGameViewProps) {
       
     return playersChannel;
   };
+  
+  // Execute the setupRealtimeSubscriptions function
+  const playersChannel = setupRealtimeSubscriptions();
+  
+  // Clean up on unmount
+  return () => {
+    supabase.removeChannel(playersChannel);
+  };
+      }
+    }
+  }, [isLoading, lobbyCode, supabase, currentPlayer?.id]);
 
   const handlePredictionChange = async (categoryId: string, nomineeId: string) => {
     if (!currentPlayer) return;

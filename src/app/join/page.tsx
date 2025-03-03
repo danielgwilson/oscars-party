@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -18,7 +18,9 @@ import { createClient } from '@/utils/supabase/client';
 import { ButtonSpinner } from '@/components/ui/spinner';
 
 export default function JoinGame() {
-  const [gameCode, setGameCode] = useState('');
+  const searchParams = useSearchParams();
+  const codeFromQuery = searchParams.get('code') || '';
+  const [gameCode, setGameCode] = useState(codeFromQuery);
   const [playerName, setPlayerName] = useState('');
   const [isJoining, setIsJoining] = useState(false);
   const router = useRouter();

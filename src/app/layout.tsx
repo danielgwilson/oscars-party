@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Movie Night Party | Multiplayer Film Prediction & Trivia Game",
-  description: "Join the ultimate movie night party with real-time predictions, trivia challenges, and live leaderboard for award shows, franchise marathons, and movie nights.",
-  keywords: "movie night, film trivia, predictions, multiplayer, game, award shows, box office, movie ratings, film quiz",
-  authors: [{ name: "Movie Night Party" }],
+  title: "You Call Yourself a Movie Buff? | AI-Powered Trivia & Roast Game",
+  description: "Test your movie knowledge in this multiplayer trivia game where AI roasts you mercilessly for wrong answers and adapts questions to what you claim to know.",
+  keywords: "movie trivia, movie roast, film quiz, movie buff, multiplayer, game, AI-powered, movie knowledge, film quiz",
+  authors: [{ name: "You Call Yourself a Movie Buff?" }],
   openGraph: {
-    title: "Movie Night Party | Multiplayer Film Prediction & Trivia Game",
-    description: "Join the ultimate movie night party with real-time predictions, trivia challenges, and live leaderboard for award shows, franchise marathons, and movie nights.",
+    title: "You Call Yourself a Movie Buff? | AI-Powered Trivia & Roast Game",
+    description: "Test your movie knowledge in this multiplayer trivia game where AI roasts you mercilessly for wrong answers and adapts questions to what you claim to know.",
     type: "website",
   },
 };
