@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Oscars Party App
+
+A real-time multiplayer prediction game for the Academy Awards built with Next.js, Tailwind, shadcn/ui and Supabase.
+
+## Features
+
+- Create and join Oscar prediction games with a 4-letter lobby code
+- Make predictions for Oscar categories before the show
+- Real-time updates during the ceremony
+- Points-based leaderboard
+- Trivia rounds between award announcements
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- A Supabase account
+
+### Installation
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/oscars-party.git
+   cd oscars-party
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env.local` file with the following:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   ```
+
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Testing
+
+### Unit Tests
+
+Run unit tests with Vitest:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+# Run all tests in watch mode
+npm test
+
+# Run all tests once
+npm run test:run
+
+# Run tests with UI
+npm run test:ui
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### End-to-End Tests
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run Playwright end-to-end tests:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Install browsers (first time only)
+npm run test:e2e:install
 
-## Learn More
+# Run all E2E tests
+npm run test:e2e
 
-To learn more about Next.js, take a look at the following resources:
+# Run tests with UI for debugging
+npm run test:e2e:ui
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# View test report
+npm run test:e2e:report
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[MIT](LICENSE)
