@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
+import { ButtonSpinner } from '@/components/ui/spinner';
 
 export default function CreateGame() {
   const [hostName, setHostName] = useState('');
@@ -26,7 +27,9 @@ export default function CreateGame() {
     e.preventDefault();
 
     if (!hostName.trim()) {
-      toast('Please enter your name to host a game');
+      toast('Please enter your name to host a game', {
+        id: 'missing-host-name',
+      });
       return;
     }
 
@@ -45,7 +48,9 @@ export default function CreateGame() {
       if (!response.ok) {
         const errorData = await response.json();
         console.error('Server error:', errorData);
-        toast.error(errorData.error || 'An error occurred creating the game');
+        toast.error(errorData.error || 'An error occurred creating the game', {
+          id: 'create-game-server-error',
+        });
         setIsCreating(false);
         return;
       }
@@ -59,6 +64,7 @@ export default function CreateGame() {
 
       toast.success('Game created!', {
         description: `Your game code is ${lobbyCode}. Share it with your friends!`,
+        id: 'game-created',
       });
 
       // Redirect to the lobby
@@ -67,6 +73,7 @@ export default function CreateGame() {
       console.error('Error creating game:', error);
       toast.error('Failed to create game', {
         description: 'There was an error creating your game. Please try again.',
+        id: 'create-game-error',
       });
     } finally {
       setIsCreating(false);
@@ -138,7 +145,14 @@ export default function CreateGame() {
               type="submit"
               className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold"
               disabled={isCreating}>
-              {isCreating ? 'Creating Game...' : 'Create Game'}
+              {isCreating ? (
+                <>
+                  <ButtonSpinner className="text-black" />
+                  Creating Game...
+                </>
+              ) : (
+                'Create Game'
+              )}
             </Button>
             <Button
               variant="outline"

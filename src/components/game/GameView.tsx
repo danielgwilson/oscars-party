@@ -17,6 +17,7 @@ import {
 import { createClient } from '@/utils/supabase/client';
 import CategoryView from './CategoryView';
 import LeaderboardView from '@/components/leaderboard/LeaderboardView';
+import { Spinner } from '@/components/ui/spinner';
 
 interface GameViewProps {
   lobbyCode: string;
@@ -114,10 +115,14 @@ export default function GameView({ lobbyCode }: GameViewProps) {
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching game data:', error);
-        toast.error('Failed to load game data', {
-          description:
-            'There was an error loading the game data. Please try again.',
-        });
+        // Only show toast error if we're not already loading
+        if (isLoading) {
+          toast.error('Failed to load game data', {
+            description:
+              'There was an error loading the game data. Please try again.',
+            id: 'game-data-error', // Add an ID to prevent duplicate toasts
+          });
+        }
       }
     };
 
@@ -237,6 +242,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
               toast.success(`Winner Announced: ${categoryName}`, {
                 description: `🏆 ${nomineeName} has won!`,
                 duration: 5000,
+                id: `winner-${payload.new.id}`,
               });
             }
           }
@@ -282,7 +288,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
       supabase.removeChannel(nomineesChannel);
       supabase.removeChannel(predictionsChannel);
     };
-  }, [lobbyCode, router, supabase, categories, currentPlayer]);
+  }, [lobbyCode, router, supabase, isLoading]);
 
   const handlePredictionChange = async (
     categoryId: string,
@@ -316,6 +322,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
       toast.error('Failed to make prediction', {
         description:
           'There was an error saving your prediction. Please try again.',
+        id: 'prediction-error',
       });
     }
   };
@@ -336,12 +343,14 @@ export default function GameView({ lobbyCode }: GameViewProps) {
 
       toast.success('Category Locked', {
         description: 'This category is now locked for voting',
+        id: `category-locked-${categoryId}`,
       });
     } catch (error) {
       console.error('Error locking category:', error);
       toast.error('Failed to lock category', {
         description:
           'There was an error locking the category. Please try again.',
+        id: 'lock-category-error',
       });
     }
   };
@@ -389,11 +398,13 @@ export default function GameView({ lobbyCode }: GameViewProps) {
 
       toast.success('Winner Set', {
         description: 'The winner has been announced and scores updated',
+        id: `winner-set-${categoryId}-${nomineeId}`,
       });
     } catch (error) {
       console.error('Error setting winner:', error);
       toast.error('Failed to set winner', {
         description: 'There was an error setting the winner. Please try again.',
+        id: 'set-winner-error',
       });
     }
   };
@@ -410,7 +421,10 @@ export default function GameView({ lobbyCode }: GameViewProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-full">
-        <div className="text-amber-400 text-xl">Loading game...</div>
+        <div className="flex flex-col items-center">
+          <Spinner size="xl" color="accent" className="mb-4" />
+          <div className="text-amber-400 text-xl">Loading game...</div>
+        </div>
       </div>
     );
   }

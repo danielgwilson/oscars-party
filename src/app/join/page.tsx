@@ -15,6 +15,7 @@ import {
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
+import { ButtonSpinner } from '@/components/ui/spinner';
 
 export default function JoinGame() {
   const [gameCode, setGameCode] = useState('');
@@ -29,6 +30,7 @@ export default function JoinGame() {
     if (!gameCode.trim() || !playerName.trim()) {
       toast('Missing information', {
         description: 'Please enter both the game code and your name',
+        id: 'missing-join-info',
       });
       return;
     }
@@ -53,6 +55,7 @@ export default function JoinGame() {
         if (response.status === 404) {
           toast.error('Invalid game code', {
             description: "The game code you entered doesn't exist",
+            id: 'invalid-game-code',
           });
           setIsJoining(false);
           return;
@@ -73,6 +76,7 @@ export default function JoinGame() {
       console.error('Error joining game:', error);
       toast.error('Failed to join game', {
         description: 'There was an error joining the game. Please try again.',
+        id: 'join-game-error',
       });
     } finally {
       setIsJoining(false);
@@ -131,7 +135,14 @@ export default function JoinGame() {
               type="submit"
               className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold"
               disabled={isJoining}>
-              {isJoining ? 'Joining...' : 'Join Game'}
+              {isJoining ? (
+                <>
+                  <ButtonSpinner className="text-black" />
+                  Joining...
+                </>
+              ) : (
+                'Join Game'
+              )}
             </Button>
             <Button
               variant="outline"

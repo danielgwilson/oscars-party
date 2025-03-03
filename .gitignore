@@ -47,3 +47,5 @@ next-env.d.ts
 repomix-output.*
 
 CURSOR_MEMORY.md
+
+/screenshots

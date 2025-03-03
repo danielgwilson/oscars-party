@@ -15,6 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { Player, Lobby } from '@/types';
 import { createClient } from '@/utils/supabase/client';
+import { Spinner, ButtonSpinner } from '@/components/ui/spinner';
+import { LoadingScreen } from '@/components/ui/loading-screen';
 
 interface LobbyViewProps {
   lobbyCode: string;
@@ -80,6 +82,7 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
         toast.error('Failed to load lobby', {
           description:
             'There was an error loading the lobby details. Please try again.',
+          id: 'lobby-load-error', // Add ID to prevent duplicate toasts
         });
       }
     };
@@ -172,6 +175,7 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
       console.error('Error starting game:', error);
       toast.error('Failed to start game', {
         description: 'There was an error starting the game. Please try again.',
+        id: 'start-game-error',
       });
       setIsStarting(false);
     }
@@ -187,11 +191,7 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-amber-400 text-xl">Loading lobby...</div>
-      </div>
-    );
+    return <LoadingScreen message="Loading lobby..." />;
   }
 
   return (
@@ -259,7 +259,14 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
               onClick={handleStartGame}
               disabled={isStarting || players.length < 1}
               className="w-full md:w-1/2 mx-auto bg-amber-500 hover:bg-amber-400 text-black font-bold">
-              {isStarting ? 'Starting Game...' : 'Start Game'}
+              {isStarting ? (
+                <>
+                  <ButtonSpinner className="text-black" />
+                  Starting Game...
+                </>
+              ) : (
+                'Start Game'
+              )}
             </Button>
           )}
         </CardFooter>
