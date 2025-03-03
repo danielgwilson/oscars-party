@@ -47,72 +47,92 @@ export default function GameView({ lobbyCode }: GameViewProps) {
     // Fetch game data
     const fetchGameData = async () => {
       try {
-        // Get current player
-        const { data: playerData, error: playerError } = await supabase
-          .from('players')
-          .select('*')
-          .eq('id', playerId)
-          .single();
-
-        if (playerError) throw new Error(playerError.message);
-        setCurrentPlayer(playerData);
-        setIsHost(playerData.is_host);
-
-        // Get all players in this lobby
-        const { data: playersData, error: playersError } = await supabase
-          .from('players')
-          .select('*')
-          .eq('lobby_id', lobbyId)
-          .order('score', { ascending: false });
-
-        if (playersError) throw new Error(playersError.message);
-        setPlayers(playersData);
-
-        // Get categories and nominees
-        const { data: categoriesData, error: categoriesError } = await supabase
-          .from('categories')
-          .select('*')
-          .eq('lobby_id', lobbyId)
-          .order('"order"');
-
-        if (categoriesError) throw new Error(categoriesError.message);
-
-        const categoriesWithNominees: CategoryWithNominees[] = [];
-
-        for (const category of categoriesData) {
-          const { data: nomineesData, error: nomineesError } = await supabase
-            .from('nominees')
+        try {
+          // Get current player
+          const { data: playerData, error: playerError } = await supabase
+            .from('players')
             .select('*')
-            .eq('category_id', category.id);
-
-          if (nomineesError) throw new Error(nomineesError.message);
-
-          categoriesWithNominees.push({
-            ...category,
-            nominees: nomineesData || [],
-          });
-        }
-
-        setCategories(categoriesWithNominees);
-
-        // Get player's predictions
-        const { data: predictionsData, error: predictionsError } =
-          await supabase
-            .from('predictions')
+            .eq('id', playerId)
+            .single();
+  
+          if (playerError) throw new Error(playerError.message);
+          setCurrentPlayer(playerData);
+          setIsHost(playerData.is_host);
+  
+          // Get all players in this lobby
+          const { data: playersData, error: playersError } = await supabase
+            .from('players')
             .select('*')
-            .eq('player_id', playerId);
-
-        if (predictionsError) throw new Error(predictionsError.message);
-
-        // Convert predictions to a simple map of category_id -> nominee_id
-        const predictionsMap: Record<string, string> = {};
-        for (const prediction of predictionsData || []) {
-          predictionsMap[prediction.category_id] = prediction.nominee_id;
+            .eq('lobby_id', lobbyId)
+            .order('score', { ascending: false });
+  
+          if (playersError) throw new Error(playersError.message);
+          setPlayers(playersData);
+  
+          // Get categories and nominees
+          const { data: categoriesData, error: categoriesError } = await supabase
+            .from('categories')
+            .select('*')
+            .eq('lobby_id', lobbyId)
+            .order('"order"');
+  
+          if (categoriesError) throw new Error(categoriesError.message);
+  
+          const categoriesWithNominees: CategoryWithNominees[] = [];
+  
+          for (const category of categoriesData) {
+            try {
+              const { data: nomineesData, error: nomineesError } = await supabase
+                .from('nominees')
+                .select('*')
+                .eq('category_id', category.id);
+  
+              if (nomineesError) throw new Error(nomineesError.message);
+  
+              categoriesWithNominees.push({
+                ...category,
+                nominees: nomineesData || [],
+              });
+            } catch (nomineeError) {
+              console.error(`Error fetching nominees for category ${category.id}:`, nomineeError);
+              // Continue with other categories even if one fails
+              categoriesWithNominees.push({
+                ...category,
+                nominees: [],
+              });
+            }
+          }
+  
+          setCategories(categoriesWithNominees);
+  
+          // Get player's predictions
+          const { data: predictionsData, error: predictionsError } =
+            await supabase
+              .from('predictions')
+              .select('*')
+              .eq('player_id', playerId);
+  
+          if (predictionsError) throw new Error(predictionsError.message);
+  
+          // Convert predictions to a simple map of category_id -> nominee_id
+          const predictionsMap: Record<string, string> = {};
+          for (const prediction of predictionsData || []) {
+            predictionsMap[prediction.category_id] = prediction.nominee_id;
+          }
+  
+          setPredictions(predictionsMap);
+  
+          setIsLoading(false);
+        } catch (supabaseError) {
+          console.error('Supabase error:', supabaseError);
+          
+          // Check if we have essential data to show something
+          if (currentPlayer && categories.length > 0) {
+            setIsLoading(false);
+          } else {
+            throw supabaseError;
+          }
         }
-
-        setPredictions(predictionsMap);
-
-        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching game data:', error);
         // Only show toast error if we're not already loading

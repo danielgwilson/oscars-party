@@ -1,3 +1,4 @@
+// Lobby represents a game session
 export interface Lobby {
   id: string;
   code: string;
@@ -7,6 +8,7 @@ export interface Lobby {
   ended_at?: string;
 }
 
+// Player represents a user in a lobby
 export interface Player {
   id: string;
   lobby_id: string;
@@ -17,14 +19,17 @@ export interface Player {
   created_at: string;
 }
 
+// Category represents a prediction category (e.g., Best Picture)
 export interface Category {
   id: string;
   name: string;
   description?: string;
   order: number;
   locked: boolean;
+  lobby_id: string;
 }
 
+// Nominee represents an option in a category (e.g., a film nominated for Best Picture)
 export interface Nominee {
   id: string;
   category_id: string;
@@ -37,6 +42,7 @@ export interface Nominee {
   is_winner?: boolean;
 }
 
+// Prediction represents a player's prediction for a category
 export interface Prediction {
   id: string;
   player_id: string;
@@ -46,6 +52,7 @@ export interface Prediction {
   updated_at: string;
 }
 
+// TriviaQuestion represents a trivia question in the game
 export interface TriviaQuestion {
   id: string;
   category_id: string;
@@ -53,8 +60,11 @@ export interface TriviaQuestion {
   options: string[];
   correct_answer: string;
   explanation?: string;
+  image_url?: string;
+  points: number;
 }
 
+// TriviaAnswer represents a player's answer to a trivia question
 export interface TriviaAnswer {
   id: string;
   player_id: string;
@@ -65,26 +75,50 @@ export interface TriviaAnswer {
   created_at: string;
 }
 
-export interface AIInsight {
-  id: string;
-  nominee_id: string;
-  content: string;
-  created_at: string;
-}
-
-export interface ChatMessage {
-  id: string;
-  lobby_id: string;
-  player_id: string;
-  content: string;
-  reaction?: string;
-  created_at: string;
-}
-
-export type NomineeWithInsight = Nominee & {
-  insight?: AIInsight;
-};
-
-export type CategoryWithNominees = Category & {
+// Additional types for UI components
+export interface CategoryWithNominees extends Category {
   nominees: Nominee[];
+}
+
+// Define fallback type definition for Supabase
+export type Database = {
+  public: {
+    Tables: {
+      lobbies: {
+        Row: Lobby;
+        Insert: Omit<Lobby, 'created_at'>;
+        Update: Partial<Omit<Lobby, 'id' | 'created_at'>>;
+      };
+      players: {
+        Row: Player;
+        Insert: Omit<Player, 'created_at'>;
+        Update: Partial<Omit<Player, 'id' | 'created_at'>>;
+      };
+      categories: {
+        Row: Category;
+        Insert: Omit<Category, 'id'>;
+        Update: Partial<Omit<Category, 'id'>>;
+      };
+      nominees: {
+        Row: Nominee;
+        Insert: Omit<Nominee, 'id'>;
+        Update: Partial<Omit<Nominee, 'id'>>;
+      };
+      predictions: {
+        Row: Prediction;
+        Insert: Omit<Prediction, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Prediction, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      trivia_questions: {
+        Row: TriviaQuestion;
+        Insert: Omit<TriviaQuestion, 'id'>;
+        Update: Partial<Omit<TriviaQuestion, 'id'>>;
+      };
+      trivia_answers: {
+        Row: TriviaAnswer;
+        Insert: Omit<TriviaAnswer, 'id' | 'created_at'>;
+        Update: Partial<Omit<TriviaAnswer, 'id' | 'created_at'>>;
+      };
+    };
+  };
 };

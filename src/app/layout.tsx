@@ -14,13 +14,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Oscars Party 2025 | Multiplayer Prediction Game",
-  description: "Join the ultimate Oscars prediction game with real-time updates, trivia, and live leaderboard during the Academy Awards ceremony.",
-  keywords: "Oscars 2025, Academy Awards, predictions, multiplayer, game, trivia, movies, film",
-  authors: [{ name: "Oscars Party Game" }],
+  title: "Movie Night Party | Multiplayer Film Prediction & Trivia Game",
+  description: "Join the ultimate movie night party with real-time predictions, trivia challenges, and live leaderboard for award shows, franchise marathons, and movie nights.",
+  keywords: "movie night, film trivia, predictions, multiplayer, game, award shows, box office, movie ratings, film quiz",
+  authors: [{ name: "Movie Night Party" }],
   openGraph: {
-    title: "Oscars Party 2025 | Multiplayer Prediction Game",
-    description: "Join the ultimate Oscars prediction game with real-time updates, trivia, and live leaderboard during the Academy Awards ceremony.",
+    title: "Movie Night Party | Multiplayer Film Prediction & Trivia Game",
+    description: "Join the ultimate movie night party with real-time predictions, trivia challenges, and live leaderboard for award shows, franchise marathons, and movie nights.",
     type: "website",
   },
 };

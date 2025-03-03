@@ -14,7 +14,7 @@ vi.mock('next/link', () => ({
 describe('Home Page', () => {
   it('renders the main heading', () => {
     render(<Home />);
-    expect(screen.getByText('🎬 Oscars Party 🏆')).toBeInTheDocument();
+    expect(screen.getByText('🎬 Movie Night Party 🏆')).toBeInTheDocument();
   });
 
   it('renders the host and join options', () => {
@@ -26,8 +26,8 @@ describe('Home Page', () => {
   it('renders the how it works section', () => {
     render(<Home />);
     expect(screen.getByText('How It Works')).toBeInTheDocument();
-    expect(screen.getByText('1. Predict Winners')).toBeInTheDocument();
+    expect(screen.getByText('1. Make Predictions')).toBeInTheDocument();
     expect(screen.getByText('2. Play Trivia')).toBeInTheDocument();
-    expect(screen.getByText('3. Win Prizes')).toBeInTheDocument();
+    expect(screen.getByText('3. Win Bragging Rights')).toBeInTheDocument();
   });
 });

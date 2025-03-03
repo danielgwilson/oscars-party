@@ -1,14 +1,23 @@
-# Oscars Party App
+# Movie Night Party App
 
-A real-time multiplayer prediction game for the Academy Awards built with Next.js, Tailwind, shadcn/ui and Supabase.
+A real-time multiplayer prediction and trivia game for movie nights, film award shows, and franchise marathons, built with Next.js, Tailwind, shadcn/ui, and Supabase.
 
 ## Features
 
-- Create and join Oscar prediction games with a 4-letter lobby code
-- Make predictions for Oscar categories before the show
-- Real-time updates during the ceremony
+- Create and join movie prediction games with a 4-letter lobby code
+- Make predictions about films, ratings, box office results, and more
+- Real-time updates for all players
 - Points-based leaderboard
-- Trivia rounds between award announcements
+- Trivia rounds for extra points
+
+## Game Types
+
+- Award Show Predictions (Oscars, Golden Globes, etc.)
+- Movie Night Trivia
+- Box Office Battle (predict earnings)
+- Franchise Marathon (specific trivia for movie series)
+- Critics' Corner (predict critics' ratings)
+- Themed Movie Nights (horror, sci-fi, comedy, etc.)
 
 ## Getting Started
 
@@ -22,8 +31,8 @@ A real-time multiplayer prediction game for the Academy Awards built with Next.j
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/oscars-party.git
-   cd oscars-party
+   git clone https://github.com/yourusername/movie-night-party.git
+   cd movie-night-party
    ```
 
 2. Install dependencies:

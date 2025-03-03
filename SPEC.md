@@ -1,8 +1,8 @@
-# Oscars Party App Specification
+# Movie Night Party App Specification
 
 ## Overview
 
-Create a real-time multiplayer prediction game for the Academy Awards. Users join virtual "parties" where they make predictions for Oscar categories and compete for points during the live show.
+Create a real-time multiplayer prediction and trivia game for movie nights and film award shows. Users join virtual "parties" where they make predictions about films, actors, and awards, and compete for points in real-time.
 
 ## Core Features
 
@@ -14,36 +14,49 @@ Create a real-time multiplayer prediction game for the Academy Awards. Users joi
 - Spectator mode for viewers who don't want to compete
 
 ### Prediction System
-- All major Oscar categories available for predictions
-- Complete list of nominees per category with images
-- Players select one nominee per category before show starts
+- Multiple prediction categories available (awards, box office, movie ratings, etc.)
+- One category displayed per screen with clear options
+- Large tap targets with images for each option
+- Players swipe or tap to navigate between prediction categories
+- Visual progress indicator showing completion percentage
 - Optional category weighting (assign more points to categories)
-- Host can lock predictions when ceremony begins
+- Host can lock predictions when appropriate
 
 ### Live Updates
-- Host marks winners in real-time as awards are announced
+- Host marks correct answers in real-time as events occur
 - Scoring updates live on leaderboard
-- Player predictions revealed after category is complete
+- Player predictions revealed after each category is complete
 - Animation/visual effects for correct predictions
 
 ### Scoring & Leaderboard
 - Standard scoring: 1 point per correct prediction
 - Optional weighted scoring for difficulty
 - Real-time leaderboard showing rankings
+- Streak bonuses for consecutive correct answers
+- Achievement badges and visual rewards
+- Celebratory animations for points earned
+- Daily challenges and bonus opportunities
 - Visual indicators for position changes
 
 ### Trivia Rounds
-- Optional trivia questions between awards
-- Multiple choice format
-- Quick-answer bonus points
-- Oscars history and current nominee facts
+- Optional trivia questions about movies, actors, and film history
+- Full-screen card for each question (Duolingo-style)
+- Multiple choice format with large tap targets
+- Visual countdown timer for quick-answer bonus points
+- Immediate feedback with sound effects and animations
+- Streaks and combo mechanics for consecutive correct answers
+- Movie facts, behind-the-scenes info, and film history
+- Custom trivia packs for specific genres or franchises
 
 ## Technical Requirements
 
-### Performance
+### Performance & UX Design
 - Support 2-50 concurrent users per lobby
 - Low latency (<2s) for real-time updates
-- Mobile-friendly responsive design
+- Mobile-first portrait orientation design
+- Single-screen gameplay (no scrolling within activities)
+- Focus on one prediction/question at a time
+- Duolingo-inspired gamification elements
 
 ### Data Model
 - User accounts (optional)
@@ -67,12 +80,17 @@ Create a real-time multiplayer prediction game for the Academy Awards. Users joi
 - Historical stats for returning users
 - Social sharing of results
 - Custom categories and predictions
-- Theme customization
+- Theme customization for different movie genres
 - Chat functionality
 - Integrated viewing party features
+- Movie recommendation engine
+- Integration with movie rating APIs
+- Custom game templates for popular franchises
 
-## Timeline
-- Initial planning & design: 2 weeks
-- Core features development: 6 weeks
-- Testing & refinement: 2 weeks
-- Launch: Prior to Academy Awards ceremony
+## Game Types
+- Award Show Predictions (Oscars, Golden Globes, etc.)
+- Movie Night Trivia
+- Box Office Battle (predict earnings)
+- Franchise Marathon (specific trivia for movie series)
+- Critics' Corner (predict critics' ratings)
+- Themed Movie Nights (horror, sci-fi, comedy, etc.)

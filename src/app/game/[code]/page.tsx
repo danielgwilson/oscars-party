@@ -9,8 +9,8 @@ interface GamePageProps {
 }
 
 export const metadata: Metadata = {
-  title: 'Oscars Party Game',
-  description: 'Make your predictions and play trivia',
+  title: 'Movie Night Party Game',
+  description: 'Make your predictions and play movie trivia',
 };
 
 export default async function GamePage(props: GamePageProps) {
@@ -21,7 +21,7 @@ export default async function GamePage(props: GamePageProps) {
     <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 flex flex-col py-4">
       <div className="text-center mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-amber-400">
-          🎬 Oscars Party 🏆
+          🎬 Movie Night Party 🏆
         </h1>
         <p className="text-lg text-amber-200 mt-1">
           Game Code: <span className="font-bold tracking-widest">{code}</span>

@@ -88,7 +88,7 @@ export default function JoinGame() {
       <Card className="w-full max-w-md bg-black/60 border-amber-600 shadow-amber-400/20 shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl text-amber-400">
-            Join an Oscars Party
+            Join a Movie Night Party
           </CardTitle>
           <CardDescription className="text-amber-200">
             Enter the 4-letter code to join an existing game

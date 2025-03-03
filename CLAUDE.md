@@ -1,4 +1,4 @@
-# CLAUDE.md - Oscars Party App Guide
+# CLAUDE.md - Movie Night Party App Guide
 
 ## Build Commands
 - `npm run dev` - Start the development server with turbopack
@@ -11,6 +11,16 @@
 - `npm run test:e2e:ui` - Run Playwright tests with UI
 - `npm run test:e2e:report` - View Playwright test reports
 - `npm run test:e2e:install` - Install Playwright browsers
+
+## UI/UX Guidelines
+
+- **Mobile-First**: Design primarily for portrait-oriented mobile devices
+- **Duolingo-Style**: Each question/prediction appears on a single screen without scrolling
+- **Large Tap Targets**: Make interactive elements at least 44x44px
+- **Swipeable Interface**: Allow navigation between screens with swipe gestures
+- **Gamification**: Use streaks, points, and visual rewards to increase engagement
+- **Visual Feedback**: Add animations and sound effects for correct answers and points
+- **Progressive Disclosure**: Show one task at a time to avoid overwhelming users
 
 ## Code Style Guidelines
 - **TypeScript**: Use strict types - interfaces for objects, explicit return types
@@ -45,8 +55,8 @@
 ## Database Schema
 - `lobbies` - Game sessions with 4-letter codes
 - `players` - Participants in each lobby
-- `categories` - Oscar award categories
-- `nominees` - Nominees for each category
+- `categories` - Prediction categories (awards, movies, etc.)
+- `nominees` - Options for each category
 - `predictions` - Player predictions for categories
 - `trivia_questions` - Game trivia questions
 - `trivia_answers` - Player answers to trivia

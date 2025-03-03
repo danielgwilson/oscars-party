@@ -45,38 +45,51 @@ export default function LobbyView({ lobbyCode }: LobbyViewProps) {
     // Fetch lobby details and players
     const fetchLobbyAndPlayers = async () => {
       try {
-        // Get lobby details
-        const { data: lobbyData, error: lobbyError } = await supabase
-          .from('lobbies')
-          .select('*')
-          .eq('code', lobbyCode)
-          .single();
-
-        if (lobbyError) throw new Error(lobbyError.message);
-        setLobby(lobbyData);
-
-        // Get current player
-        const { data: playerData, error: playerError } = await supabase
-          .from('players')
-          .select('*')
-          .eq('id', playerId)
-          .single();
-
-        if (playerError) throw new Error(playerError.message);
-        setCurrentPlayer(playerData);
-        setIsHost(playerData.is_host);
-
-        // Get all players in this lobby
-        const { data: playersData, error: playersError } = await supabase
-          .from('players')
-          .select('*')
-          .eq('lobby_id', lobbyId)
-          .order('created_at');
-
-        if (playersError) throw new Error(playersError.message);
-        setPlayers(playersData);
-
-        setIsLoading(false);
+        // Wrap this in a try/catch to handle potential network errors
+        try {
+          // Get lobby details
+          const { data: lobbyData, error: lobbyError } = await supabase
+            .from('lobbies')
+            .select('*')
+            .eq('code', lobbyCode)
+            .single();
+  
+          if (lobbyError) throw new Error(lobbyError.message);
+          setLobby(lobbyData);
+  
+          // Get current player
+          const { data: playerData, error: playerError } = await supabase
+            .from('players')
+            .select('*')
+            .eq('id', playerId)
+            .single();
+  
+          if (playerError) throw new Error(playerError.message);
+          setCurrentPlayer(playerData);
+          setIsHost(playerData.is_host);
+  
+          // Get all players in this lobby
+          const { data: playersData, error: playersError } = await supabase
+            .from('players')
+            .select('*')
+            .eq('lobby_id', lobbyId)
+            .order('created_at');
+  
+          if (playersError) throw new Error(playersError.message);
+          setPlayers(playersData);
+  
+          setIsLoading(false);
+        } catch (supabaseError) {
+          console.error('Supabase error:', supabaseError);
+          
+          // Check if we already have the lobby and player loaded to avoid
+          // blocking the UI unnecessarily
+          if (lobby && currentPlayer) {
+            setIsLoading(false);
+          } else {
+            throw supabaseError; // Re-throw to be caught by the outer catch
+          }
+        }
       } catch (error) {
         console.error('Error fetching lobby details:', error);
         toast.error('Failed to load lobby', {

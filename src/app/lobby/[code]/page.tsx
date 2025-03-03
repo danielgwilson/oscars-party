@@ -7,8 +7,8 @@ interface LobbyPageProps {
 }
 
 export const metadata: Metadata = {
-  title: 'Oscars Party Lobby',
-  description: 'Join the lobby and wait for the game to start',
+  title: 'Movie Night Party Lobby',
+  description: 'Join the lobby and wait for the movie night to start',
 };
 
 export default async function LobbyPage(props: LobbyPageProps) {
@@ -19,7 +19,7 @@ export default async function LobbyPage(props: LobbyPageProps) {
     <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 flex flex-col items-center justify-center p-4">
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-6xl font-bold text-amber-400">
-          🎬 Oscars Party 🏆
+          🎬 Movie Night Party 🏆
         </h1>
         <p className="text-xl text-amber-200 mt-2">Lobby</p>
       </div>

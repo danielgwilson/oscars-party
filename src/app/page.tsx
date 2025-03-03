@@ -7,7 +7,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 text-white">
       <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen">
         <div className="text-center mb-12">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-amber-400">🎬 Oscars Party 🏆</h1>
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-amber-400">🎬 Movie Night Party 🏆</h1>
           <p className="text-xl md:text-2xl text-amber-200 mb-8">Predict, Play, and Win!</p>
         </div>
         
@@ -19,7 +19,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-300">
-                Start a new Oscars prediction game. Invite friends to join with a unique 4-letter code and compete to see who knows their movies best!
+                Start a new movie night party game. Invite friends to join with a unique 4-letter code and compete to see who knows their movies best!
               </p>
             </CardContent>
             <CardFooter>
@@ -36,7 +36,7 @@ export default function Home() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-300">
-                Got a code from a friend? Enter it to join their Oscars prediction game and compete for the top spot on the leaderboard!
+                Got a code from a friend? Enter it to join their movie night party and compete for the top spot on the leaderboard!
               </p>
             </CardContent>
             <CardFooter>
@@ -51,9 +51,9 @@ export default function Home() {
           <h2 className="text-2xl font-semibold text-amber-400 mb-4">How It Works</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-300">
             <div className="flex flex-col items-center">
-              <div className="text-4xl mb-2">🎟️</div>
-              <h3 className="text-xl font-medium text-amber-300 mb-2">1. Predict Winners</h3>
-              <p>Make your predictions for each Oscar category</p>
+              <div className="text-4xl mb-2">🎬</div>
+              <h3 className="text-xl font-medium text-amber-300 mb-2">1. Make Predictions</h3>
+              <p>Predict outcomes for films, ratings, box office, and more</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="text-4xl mb-2">🎮</div>
@@ -62,8 +62,8 @@ export default function Home() {
             </div>
             <div className="flex flex-col items-center">
               <div className="text-4xl mb-2">🏆</div>
-              <h3 className="text-xl font-medium text-amber-300 mb-2">3. Win Prizes</h3>
-              <p>See who tops the leaderboard when all awards are announced</p>
+              <h3 className="text-xl font-medium text-amber-300 mb-2">3. Win Bragging Rights</h3>
+              <p>See who tops the leaderboard at the end of your movie night</p>
             </div>
           </div>
         </div>

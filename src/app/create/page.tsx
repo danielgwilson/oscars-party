@@ -115,10 +115,10 @@ export default function CreateGame() {
       <Card className="w-full max-w-md bg-black/60 border-amber-600 shadow-amber-400/20 shadow-lg">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl text-amber-400">
-            Host an Oscars Party
+            Host a Movie Night Party
           </CardTitle>
           <CardDescription className="text-amber-200">
-            Create a new prediction game for the Academy Awards
+            Create a new prediction and trivia game for your movie night
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleCreateLobby}>

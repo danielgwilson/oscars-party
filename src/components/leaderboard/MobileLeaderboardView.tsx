@@ -1,16 +1,24 @@
-'use client';
-
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Player, CategoryWithNominees } from '@/types';
+import { 
+  MobileCard, 
+  MobileCardHeader, 
+  MobileCardContent, 
+  MobileCardFooter 
+} from '../ui/mobile-view';
+import { Button } from '../ui/button';
+import { Badge } from '../ui/badge';
 
-interface LeaderboardViewProps {
+interface MobileLeaderboardViewProps {
   players: Player[];
   categories: CategoryWithNominees[];
+  onBackToGame: () => void;
 }
 
-export default function LeaderboardView({ players, categories }: LeaderboardViewProps) {
+export default function MobileLeaderboardView({ 
+  players, 
+  categories,
+  onBackToGame
+}: MobileLeaderboardViewProps) {
   // Calculate how many categories have winners declared
   const completedCategories = categories.filter(category => 
     category.nominees.some(nominee => nominee.is_winner)
@@ -45,17 +53,18 @@ export default function LeaderboardView({ players, categories }: LeaderboardView
   };
 
   return (
-    <div className="space-y-6">
-      <Card className="bg-black/60 border-amber-600 shadow-amber-400/20 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-xl text-amber-400 flex justify-between items-center">
-            <span>Leaderboard</span>
-            <Badge className="bg-amber-600 text-black">
-              {completedCategories} of {categories.length} categories decided
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+    <MobileCard>
+      <MobileCardHeader
+        title="Leaderboard"
+        subtitle={`${completedCategories} of ${categories.length} categories completed`}
+      />
+      
+      <MobileCardContent className="pb-20">
+        {sortedPlayers.length === 0 ? (
+          <div className="text-center py-12 text-gray-400">
+            No players yet
+          </div>
+        ) : (
           <div className="space-y-3">
             {sortedPlayers.map((player, index) => {
               const position = getPlayerPosition(index);
@@ -64,11 +73,11 @@ export default function LeaderboardView({ players, categories }: LeaderboardView
                 <div 
                   key={player.id}
                   className={`
-                    flex items-center p-3 rounded-lg
+                    flex items-center p-4 rounded-lg
                     ${position === 1 ? 'bg-amber-500/20 border border-amber-500' : 
                       position === 2 ? 'bg-amber-600/10 border border-amber-600/70' :
                       position === 3 ? 'bg-amber-700/10 border border-amber-700/60' :
-                      'bg-black/30'
+                      'bg-black/40 border border-amber-700/30'
                     }
                   `}
                 >
@@ -76,21 +85,19 @@ export default function LeaderboardView({ players, categories }: LeaderboardView
                     {getPositionBadge(position)}
                   </div>
                   
-                  <Avatar className="h-10 w-10 mx-3">
-                    <AvatarFallback 
-                      className={`
-                        ${position === 1 ? 'bg-amber-500 text-black' : 
-                          position === 2 ? 'bg-amber-600/80 text-white' :
-                          position === 3 ? 'bg-amber-700/80 text-white' :
-                          'bg-gray-800 text-amber-400'
-                        }
-                      `}
-                    >
+                  <div className="ml-3 h-10 w-10 flex-shrink-0 rounded-full bg-amber-700/40 flex items-center justify-center">
+                    <span className={`text-sm font-bold
+                      ${position === 1 ? 'text-amber-300' : 
+                        position === 2 ? 'text-amber-300/80' :
+                        position === 3 ? 'text-amber-300/70' :
+                        'text-amber-400/60'
+                      }
+                    `}>
                       {getInitials(player.name)}
-                    </AvatarFallback>
-                  </Avatar>
+                    </span>
+                  </div>
                   
-                  <div className="flex-1">
+                  <div className="ml-3 flex-1">
                     <div className="font-medium text-white">
                       {player.name}
                       {player.is_host && (
@@ -110,24 +117,14 @@ export default function LeaderboardView({ players, categories }: LeaderboardView
                 </div>
               );
             })}
-            
-            {players.length === 0 && (
-              <div className="text-center py-8 text-gray-400">
-                No players yet
-              </div>
-            )}
           </div>
-        </CardContent>
-      </Card>
-      
-      <Card className="bg-black/60 border-amber-600 shadow-amber-400/20 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-lg text-amber-400">
+        )}
+        
+        <div className="mt-6 p-4 bg-black/40 border border-amber-700/30 rounded-lg">
+          <h3 className="text-lg font-medium text-amber-400 mb-3">
             How Scoring Works
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2 text-white">
+          </h3>
+          <ul className="space-y-2 text-sm text-white">
             <li className="flex">
               <span className="mr-2 text-amber-400">✓</span>
               <span>10 points for each correct prediction</span>
@@ -138,11 +135,20 @@ export default function LeaderboardView({ players, categories }: LeaderboardView
             </li>
             <li className="flex">
               <span className="mr-2 text-amber-400">✓</span>
-              <span>First place earns ultimate movie buff status</span>
+              <span>Streak bonuses for consecutive correct answers</span>
             </li>
           </ul>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </MobileCardContent>
+      
+      <MobileCardFooter className="absolute bottom-0 left-0 right-0 bg-black/80 backdrop-blur-sm">
+        <Button 
+          onClick={onBackToGame}
+          className="w-full bg-amber-500 hover:bg-amber-400 text-black font-medium"
+        >
+          Back to Game
+        </Button>
+      </MobileCardFooter>
+    </MobileCard>
   );
 }
