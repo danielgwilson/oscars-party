@@ -1,101 +1,73 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-b from-black to-amber-950 text-white">
+      <div className="container mx-auto px-4 py-16 flex flex-col items-center justify-center min-h-screen">
+        <div className="text-center mb-12">
+          <h1 className="text-5xl md:text-7xl font-bold mb-4 text-amber-400">🎬 Oscars Party 🏆</h1>
+          <p className="text-xl md:text-2xl text-amber-200 mb-8">Predict, Play, and Win!</p>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl w-full">
+          <Card className="bg-black/60 border-amber-600 shadow-amber-400/20 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-amber-400">Host a Party</CardTitle>
+              <CardDescription className="text-amber-200">Create a new game for your friends</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300">
+                Start a new Oscars prediction game. Invite friends to join with a unique 4-letter code and compete to see who knows their movies best!
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button asChild variant="default" className="w-full bg-amber-500 hover:bg-amber-400 text-black font-bold">
+                <Link href="/create">Host New Game</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+          
+          <Card className="bg-black/60 border-amber-600 shadow-amber-400/20 shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-amber-400">Join a Party</CardTitle>
+              <CardDescription className="text-amber-200">Enter a game code to join</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-300">
+                Got a code from a friend? Enter it to join their Oscars prediction game and compete for the top spot on the leaderboard!
+              </p>
+            </CardContent>
+            <CardFooter>
+              <Button asChild variant="outline" className="w-full border-amber-500 text-amber-400 hover:bg-amber-500/10">
+                <Link href="/join">Join Game</Link>
+              </Button>
+            </CardFooter>
+          </Card>
+        </div>
+        
+        <div className="mt-16 max-w-3xl text-center">
+          <h2 className="text-2xl font-semibold text-amber-400 mb-4">How It Works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-300">
+            <div className="flex flex-col items-center">
+              <div className="text-4xl mb-2">🎟️</div>
+              <h3 className="text-xl font-medium text-amber-300 mb-2">1. Predict Winners</h3>
+              <p>Make your predictions for each Oscar category</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-4xl mb-2">🎮</div>
+              <h3 className="text-xl font-medium text-amber-300 mb-2">2. Play Trivia</h3>
+              <p>Answer movie trivia for bonus points</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-4xl mb-2">🏆</div>
+              <h3 className="text-xl font-medium text-amber-300 mb-2">3. Win Prizes</h3>
+              <p>See who tops the leaderboard when all awards are announced</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,0 +1,272 @@
+{
+  "Best Picture": [
+    "Anora",
+    "The Brutalist",
+    "A Complete Unknown",
+    "Conclave",
+    "Dune: Part Two",
+    "Emilia Pérez",
+    "I'm Still Here",
+    "Nickel Boys",
+    "The Substance",
+    "Wicked"
+  ],
+  "Actor in a Leading Role": [
+    {
+      "name": "Adrien Brody",
+      "movie": "The Brutalist"
+    },
+    {
+      "name": "Timothée Chalamet",
+      "movie": "A Complete Unknown"
+    },
+    {
+      "name": "Colman Domingo",
+      "movie": "Sing Sing"
+    },
+    {
+      "name": "Ralph Fiennes",
+      "movie": "Conclave"
+    },
+    {
+      "name": "Sebastian Stan",
+      "movie": "The Apprentice"
+    }
+  ],
+  "Actress in a Leading Role": [
+    {
+      "name": "Cynthia Erivo",
+      "movie": "Wicked"
+    },
+    {
+      "name": "Karla Sofía Gascón",
+      "movie": "Emilia Pérez"
+    },
+    {
+      "name": "Mikey Madison",
+      "movie": "Anora"
+    },
+    {
+      "name": "Demi Moore",
+      "movie": "The Substance"
+    },
+    {
+      "name": "Fernanda Torres",
+      "movie": "I'm Still Here"
+    }
+  ],
+  "Actor in a Supporting Role": [
+    {
+      "name": "Yura Borisov",
+      "movie": "Anora"
+    },
+    {
+      "name": "Kieran Culkin",
+      "movie": "A Real Pain"
+    },
+    {
+      "name": "Edward Norton",
+      "movie": "A Complete Unknown"
+    },
+    {
+      "name": "Guy Pearce",
+      "movie": "The Brutalist"
+    },
+    {
+      "name": "Jeremy Strong",
+      "movie": "The Apprentice"
+    }
+  ],
+  "Actress in a Supporting Role": [
+    {
+      "name": "Monica Barbaro",
+      "movie": "A Complete Unknown"
+    },
+    {
+      "name": "Ariana Grande",
+      "movie": "Wicked"
+    },
+    {
+      "name": "Felicity Jones",
+      "movie": "The Brutalist"
+    },
+    {
+      "name": "Isabella Rossellini",
+      "movie": "Conclave"
+    },
+    {
+      "name": "Zoe Saldaña",
+      "movie": "Emilia Pérez"
+    }
+  ],
+  "Animated Feature Film": [
+    {
+      "title": "Flow",
+      "directors": ["Gints Zilbalodis", "Matīss Kaža"],
+      "producers": ["Ron Dyens", "Gregory Zalcman"]
+    },
+    {
+      "title": "Inside Out 2",
+      "directors": ["Kelsey Mann"],
+      "producers": ["Mark Nielsen"]
+    },
+    {
+      "title": "Memoir of a Snail",
+      "directors": ["Adam Elliot"],
+      "producers": ["Liz Kearney"]
+    },
+    {
+      "title": "Wallace & Gromit: Vengeance Most Fowl",
+      "directors": ["Nick Park", "Merlin Crossingham"],
+      "producers": ["Richard Beek"]
+    },
+    {
+      "title": "The Wild Robot",
+      "directors": ["Chris Sanders"],
+      "producers": ["Jeff Hermann"]
+    }
+  ],
+  "Documentary Feature Film": [
+    {
+      "title": "Black Box Diaries",
+      "directors": ["Shiori Itō", "Eric Nyari"],
+      "producers": ["Hanna Aqvilin"]
+    },
+    {
+      "title": "No Other Land",
+      "directors": [
+        "Basel Adra",
+        "Rachel Szor",
+        "Hamdan Ballal",
+        "Yuval Abraham"
+      ],
+      "producers": []
+    },
+    {
+      "title": "Porcelain War",
+      "directors": ["Brendan Bellomo", "Slava Leontyev"],
+      "producers": ["Aniela Sidorska", "Paula DuPré Pesmen"]
+    },
+    {
+      "title": "Soundtrack to a Coup d'Etat",
+      "directors": ["Johan Grimonprez", "Daan Milius"],
+      "producers": ["Rémi Grellety"]
+    },
+    {
+      "title": "Sugarcane",
+      "directors": ["Julian Brave NoiseCat", "Emily Kassie"],
+      "producers": ["Kellen Quinn"]
+    }
+  ],
+  "International Feature Film": [
+    {
+      "title": "I'm Still Here",
+      "country": "Brazil",
+      "director": "Walter Salles"
+    },
+    {
+      "title": "The Girl with the Needle",
+      "country": "Denmark",
+      "director": "Magnus von Horn"
+    },
+    {
+      "title": "Emilia Pérez",
+      "country": "France",
+      "director": "Jacques Audiard"
+    },
+    {
+      "title": "The Seed of the Sacred Fig",
+      "country": "Germany",
+      "director": "Mohammad Rasulof"
+    },
+    {
+      "title": "Flow",
+      "country": "Latvia",
+      "director": "Gints Zilbalodis"
+    }
+  ],
+  "Directing": [
+    {
+      "name": "Sean Baker",
+      "movie": "Anora"
+    },
+    {
+      "name": "Brady Corbet",
+      "movie": "The Brutalist"
+    },
+    {
+      "name": "James Mangold",
+      "movie": "A Complete Unknown"
+    },
+    {
+      "name": "Jacques Audiard",
+      "movie": "Emilia Pérez"
+    },
+    {
+      "name": "Coralie Fargeat",
+      "movie": "The Substance"
+    }
+  ],
+  "Cinematography": [
+    {
+      "name": "Lol Crawley",
+      "movie": "The Brutalist"
+    },
+    {
+      "name": "Greig Fraser",
+      "movie": "Dune: Part Two"
+    },
+    {
+      "name": "Paul Guilhaume",
+      "movie": "Emilia Pérez"
+    },
+    {
+      "name": "Ed Lachman",
+      "movie": "Maria"
+    },
+    {
+      "name": "Jarin Blaschke",
+      "movie": "Nosferatu"
+    }
+  ],
+  "Costume Design": [
+    {
+      "name": "Paul Tazewell",
+      "movie": "Wicked"
+    },
+    {
+      "name": "Arianne Phillips",
+      "movie": "A Complete Unknown"
+    },
+    {
+      "name": "Lisy Christl",
+      "movie": "Conclave"
+    },
+    {
+      "name": "Janty Yates and Dave Crossman",
+      "movie": "Gladiator II"
+    },
+    {
+      "name": "Linda Muir",
+      "movie": "Nosferatu"
+    }
+  ],
+  "Film Editing": [
+    {
+      "name": "Sean Baker",
+      "movie": "Anora"
+    },
+    {
+      "name": "David Jancsó",
+      "movie": "The Brutalist"
+    },
+    {
+      "name": "Nick Emerson",
+      "movie": "Conclave"
+    },
+    {
+      "name": "Juliette Welfling",
+      "movie": "Emilia Pérez"
+    }
+  ]
+}
