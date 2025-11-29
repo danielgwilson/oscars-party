@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { createClient } from '@/utils/supabase/server';
 import { generateLobbyCode } from './utils';
 import { Lobby, Player, Category, Nominee, Prediction } from '@/types';

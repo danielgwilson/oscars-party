@@ -5,6 +5,11 @@ import { z } from 'zod';
 
 export const runtime = 'edge';
 
+type FavoriteMovie = Database['public']['Tables']['favorite_movies']['Row'];
+type QuestionRow = Database['public']['Tables']['questions']['Row'];
+type Question = QuestionRow;
+type Movie = Database['public']['Tables']['movies']['Row'];
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -52,10 +57,6 @@ export async function POST(req: NextRequest) {
       console.error('Error fetching favorite movies:', favoritesError);
       // Continue with empty favorites - we'll generate generic questions
     }
-    
-    // Define types using Supabase generated types
-    type FavoriteMovie = Database['public']['Tables']['favorite_movies']['Row'];
-    type Question = Database['public']['Tables']['questions']['Row'];
     
     // Group favorite movies by player
     const favoritesByPlayer = (favoriteMovies || []).reduce((acc, movie) => {
@@ -229,14 +230,17 @@ export async function POST(req: NextRequest) {
     
     // Insert trivia questions
     console.log(`Inserting ${triviaQuestions.length} questions for lobby ${lobbyId}`);
-    const { error: questionsError } = await supabase
-      .from('questions')
-      .insert(
-        triviaQuestions.map(q => ({
-          ...q,
-          lobby_id: lobbyId
-        }))
-      );
+    const questionPayload: Database['public']['Tables']['questions']['Insert'][] = triviaQuestions.map(
+      q => ({
+        ...q,
+        lobby_id: lobbyId,
+        question: q.question ?? '',
+        correct_answer: q.correct_answer ?? '',
+        options: q.options ?? [],
+      })
+    );
+
+    const { error: questionsError } = await supabase.from('questions').insert(questionPayload);
     
     if (questionsError) {
       console.error('Error inserting questions:', questionsError);
@@ -366,10 +370,6 @@ async function generateOpenAIQuestions(
     movieId?: string;
     difficulty: typeof difficulties[number];
   }[] = [];
-  
-  // Define types using Supabase generated types
-  type FavoriteMovie = Database['public']['Tables']['favorite_movies']['Row'];
-  type Movie = Database['public']['Tables']['movies']['Row'];
   
   // For each player, prepare question generation requests based on their favorites
   for (const playerId in favoritesByPlayer) {

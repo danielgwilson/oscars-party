@@ -17,7 +17,7 @@ export default function LeaderboardView({ players, categories }: LeaderboardView
   ).length;
   
   // Sort players by score (should already be sorted, but just to be safe)
-  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+  const sortedPlayers = [...players].sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
   
   const getInitials = (name: string) => {
     return name
