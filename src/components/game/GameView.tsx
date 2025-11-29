@@ -57,7 +57,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
   
           if (playerError) throw new Error(playerError.message);
           setCurrentPlayer(playerData);
-          setIsHost(playerData.is_host);
+          setIsHost(Boolean(playerData.is_host));
   
           // Get all players in this lobby
           const { data: playersData, error: playersError } = await supabase
@@ -71,7 +71,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
   
           // Get categories and nominees
           const { data: categoriesData, error: categoriesError } = await supabase
-            .from('categories')
+            .from('categories' as never)
             .select('*')
             .eq('lobby_id', lobbyId)
             .order('"order"');
@@ -79,11 +79,12 @@ export default function GameView({ lobbyCode }: GameViewProps) {
           if (categoriesError) throw new Error(categoriesError.message);
   
           const categoriesWithNominees: CategoryWithNominees[] = [];
-  
-          for (const category of categoriesData) {
+          const typedCategories = (categoriesData || []) as Category[];
+
+          for (const category of typedCategories) {
             try {
               const { data: nomineesData, error: nomineesError } = await supabase
-                .from('nominees')
+                .from('nominees' as never)
                 .select('*')
                 .eq('category_id', category.id);
   
@@ -91,7 +92,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
   
               categoriesWithNominees.push({
                 ...category,
-                nominees: nomineesData || [],
+                nominees: (nomineesData || []) as Nominee[],
               });
             } catch (nomineeError) {
               console.error(`Error fetching nominees for category ${category.id}:`, nomineeError);
@@ -108,7 +109,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
           // Get player's predictions
           const { data: predictionsData, error: predictionsError } =
             await supabase
-              .from('predictions')
+              .from('predictions' as never)
               .select('*')
               .eq('player_id', playerId);
   
@@ -116,8 +117,11 @@ export default function GameView({ lobbyCode }: GameViewProps) {
   
           // Convert predictions to a simple map of category_id -> nominee_id
           const predictionsMap: Record<string, string> = {};
-          for (const prediction of predictionsData || []) {
-            predictionsMap[prediction.category_id] = prediction.nominee_id;
+          const typedPredictions = (predictionsData || []) as Prediction[];
+          for (const prediction of typedPredictions) {
+            if (prediction.category_id && prediction.nominee_id) {
+              predictionsMap[prediction.category_id] = prediction.nominee_id;
+            }
           }
   
           setPredictions(predictionsMap);
@@ -152,19 +156,19 @@ export default function GameView({ lobbyCode }: GameViewProps) {
     const playersChannel = supabase
       .channel('game-players')
       .on(
-        'postgres_changes',
+        'postgres_changes' as any,
         {
           event: '*',
           schema: 'public',
           table: 'players',
           filter: `lobby_id=eq.${lobbyId}`,
-        },
-        (payload) => {
+        } as any,
+        (payload: any) => {
           // Update players list
           if (payload.eventType === 'INSERT') {
             setPlayers((current) =>
               [...current, payload.new as Player].sort(
-                (a, b) => b.score - a.score
+                (a, b) => (b.score ?? 0) - (a.score ?? 0)
               )
             );
           } else if (payload.eventType === 'DELETE') {
@@ -177,7 +181,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
                 .map((p) =>
                   p.id === payload.new.id ? (payload.new as Player) : p
                 )
-                .sort((a, b) => b.score - a.score)
+                .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))
             );
 
             // Update current player if it's the one that changed
@@ -193,13 +197,13 @@ export default function GameView({ lobbyCode }: GameViewProps) {
     const categoriesChannel = supabase
       .channel('game-categories')
       .on(
-        'postgres_changes',
+        'postgres_changes' as any,
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'categories',
-        },
-        (payload) => {
+        } as any,
+        (payload: any) => {
           setCategories((current) =>
             current.map((c) =>
               c.id === payload.new.id
@@ -215,13 +219,13 @@ export default function GameView({ lobbyCode }: GameViewProps) {
     const nomineesChannel = supabase
       .channel('game-nominees')
       .on(
-        'postgres_changes',
+        'postgres_changes' as any,
         {
           event: 'UPDATE',
           schema: 'public',
           table: 'nominees',
-        },
-        (payload) => {
+        } as any,
+        (payload: any) => {
           setCategories((current) =>
             current.map((c) => {
               // Find the category that contains this nominee
@@ -274,14 +278,14 @@ export default function GameView({ lobbyCode }: GameViewProps) {
     const predictionsChannel = supabase
       .channel('game-predictions')
       .on(
-        'postgres_changes',
+        'postgres_changes' as any,
         {
           event: '*',
           schema: 'public',
           table: 'predictions',
           filter: `player_id=eq.${playerId}`,
-        },
-        (payload) => {
+        } as any,
+        (payload: any) => {
           if (
             payload.eventType === 'INSERT' ||
             payload.eventType === 'UPDATE'
@@ -303,10 +307,10 @@ export default function GameView({ lobbyCode }: GameViewProps) {
 
     // Cleanup on unmount
     return () => {
-      supabase.removeChannel(playersChannel);
-      supabase.removeChannel(categoriesChannel);
-      supabase.removeChannel(nomineesChannel);
-      supabase.removeChannel(predictionsChannel);
+      if (playersChannel) supabase.removeChannel(playersChannel as any);
+      if (categoriesChannel) supabase.removeChannel(categoriesChannel as any);
+      if (nomineesChannel) supabase.removeChannel(nomineesChannel as any);
+      if (predictionsChannel) supabase.removeChannel(predictionsChannel as any);
     };
   }, [lobbyCode, router, supabase, isLoading, categories, currentPlayer, predictions]);
 
@@ -318,13 +322,13 @@ export default function GameView({ lobbyCode }: GameViewProps) {
 
     try {
       // Update the prediction in the database
-      const { error } = await supabase.from('predictions').upsert(
+      const { error } = await supabase.from('predictions' as never).upsert(
         {
           player_id: currentPlayer.id,
           category_id: categoryId,
           nominee_id: nomineeId,
           updated_at: new Date().toISOString(),
-        },
+        } as any,
         {
           onConflict: 'player_id,category_id',
         }
@@ -352,8 +356,8 @@ export default function GameView({ lobbyCode }: GameViewProps) {
 
     try {
       // Lock the category in the database
-      const { error } = await supabase
-        .from('categories')
+      const categoriesTable = supabase.from('categories' as never) as any;
+      const { error } = await categoriesTable
         .update({
           locked: true,
         })
@@ -379,9 +383,11 @@ export default function GameView({ lobbyCode }: GameViewProps) {
     if (!isHost) return;
 
     try {
+      const categoriesTable = supabase.from('categories' as never) as any;
+      const nomineesTable = supabase.from('nominees' as never) as any;
+
       // First reset all nominees in this category
-      const { error: resetError } = await supabase
-        .from('nominees')
+      const { error: resetError } = await nomineesTable
         .update({
           is_winner: false,
         })
@@ -390,8 +396,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
       if (resetError) throw new Error(resetError.message);
 
       // Then set the winner
-      const { error } = await supabase
-        .from('nominees')
+      const { error } = await nomineesTable
         .update({
           is_winner: true,
         })
@@ -400,8 +405,7 @@ export default function GameView({ lobbyCode }: GameViewProps) {
       if (error) throw new Error(error.message);
 
       // Make sure the category is locked
-      await supabase
-        .from('categories')
+      await categoriesTable
         .update({
           locked: true,
         })

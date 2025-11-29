@@ -74,7 +74,7 @@ export default function MobileCategoryView({
       
       <MobileCardHeader
         title={category.name}
-        subtitle={category.description}
+        subtitle={category.description ?? undefined}
         progress={progress}
         onBack={() => router.push('/')}
       />
@@ -111,7 +111,7 @@ export default function MobileCategoryView({
             <OptionCard
               key={nominee.id}
               selected={selectedId === nominee.id}
-              disabled={category.locked}
+              disabled={Boolean(category.locked)}
               onClick={() => handleSelectNominee(nominee.id)}
             >
               <div className="flex gap-3">

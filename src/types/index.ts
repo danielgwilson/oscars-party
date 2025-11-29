@@ -43,8 +43,50 @@ export interface Movie {
   poster_path: string | null;
   release_date: string | null;
   overview: string | null;
+  director?: string | null;
   genres: string[] | null;
   data: any | null;
+  created_at: string | null;
+}
+
+export interface Nominee {
+  id: string;
+  lobby_id?: string | null;
+  category_id?: string | null;
+  name: string;
+  movie?: string | null;
+  director?: string | null;
+  country?: string | null;
+  producers?: string[] | string | null;
+  image_url?: string | null;
+  is_winner?: boolean | null;
+}
+
+export interface CategoryWithNominees {
+  id: string;
+  lobby_id?: string | null;
+  name: string;
+  description?: string | null;
+  locked?: boolean | null;
+  order?: number | null;
+  nominees: Nominee[];
+}
+
+export interface Category {
+  id: string;
+  lobby_id: string | null;
+  name: string;
+  description: string | null;
+  locked: boolean | null;
+  order: number | null;
+  created_at: string | null;
+}
+
+export interface Prediction {
+  id: string;
+  player_id: string | null;
+  category_id: string | null;
+  nominee_id: string | null;
   created_at: string | null;
 }
 

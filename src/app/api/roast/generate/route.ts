@@ -210,7 +210,7 @@ Be funny but not truly mean. Make specific references to their mistake if possib
     }
     
     // Clean up the response (remove quotes if present)
-    return content.replace(/^["'](.*)["']$/s, '$1').trim();
+    return content.replace(/^['"]/, '').replace(/['"]$/, '').trim();
   } catch (error) {
     console.error('Error generating roast with OpenAI:', error);
     // Throw the error up to be handled by the caller
