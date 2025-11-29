@@ -66,7 +66,7 @@ export default function EmojiChat({
     setIsOpen(false);
   };
   
-  const getPlayerName = (playerId: string) => {
+  const getPlayerName = (playerId: string | null) => {
     const player = players.find(p => p.id === playerId);
     return player ? player.name : 'Unknown';
   };

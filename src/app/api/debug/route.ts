@@ -6,9 +6,9 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const debugInfo: Record<string, any> = {};
     
-    // Test database connection
+    // Test database connection against a known table
     try {
-      const { data, error } = await supabase.from('_prisma_migrations').select('*').limit(1);
+      const { error } = await supabase.from('lobbies').select('id').limit(1);
       debugInfo.connectionTest = {
         success: !error,
         error: error ? error.message : null,
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     
     // Try to get DB schema
     try {
-      const { data, error } = await supabase.rpc('get_schema');
+      const { data, error } = await supabase.rpc('get_schema' as never);
       debugInfo.schema = {
         success: !error,
         data: data || null,
@@ -36,7 +36,18 @@ export async function GET(request: NextRequest) {
     }
     
     // Check if our tables exist
-    const tables = ['lobbies', 'players', 'categories', 'nominees', 'predictions'];
+    const tables = [
+      'lobbies',
+      'players',
+      'movies',
+      'questions',
+      'answers',
+      'chat_messages',
+      'favorite_movies',
+      'final_burns',
+      'roasts',
+      'shame_movies',
+    ] as const;
     debugInfo.tables = {};
     
     for (const table of tables) {

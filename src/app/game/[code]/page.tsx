@@ -88,7 +88,7 @@ async function GameContent({
   // Render host view or player view using the client component wrapper
   return (
     <ClientGameWrapper
-      isHost={player.is_host}
+      isHost={Boolean(player.is_host)}
       lobbyId={lobby.id}
       lobbyCode={lobby.code}
       player={player}

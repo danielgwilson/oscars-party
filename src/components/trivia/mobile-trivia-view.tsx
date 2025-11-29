@@ -45,9 +45,10 @@ export default function MobileTriviaView({
   const [showRoast, setShowRoast] = useState(false);
   const [timeLeft, setTimeLeft] = useState(15); // 15 seconds to answer
   const [pointsEarned, setPointsEarned] = useState(0);
-  
+
   const isCorrect = selectedAnswer === question.correct_answer;
   const progress = (currentQuestionNumber / totalQuestions) * 100;
+  const basePoints = question.points ?? 0;
   
   useEffect(() => {
     // Reset state when question changes
@@ -70,7 +71,8 @@ export default function MobileTriviaView({
     if (answer === question.correct_answer) {
       const timeBonus = Math.floor(timeLeft * 2);
       const streakBonus = streak > 1 ? Math.min(streak * 5, 25) : 0;
-      const totalPoints = question.points + timeBonus + streakBonus;
+      const basePoints = question.points ?? 0;
+      const totalPoints = basePoints + timeBonus + streakBonus;
       
       setPointsEarned(totalPoints);
       setShowConfetti(true);
@@ -206,7 +208,7 @@ export default function MobileTriviaView({
               +{pointsEarned} points!
             </div>
             <div className="text-amber-300/70 text-sm">
-              (Base: {question.points} + Time: {pointsEarned - question.points - (streak > 1 ? Math.min(streak * 5, 25) : 0)} + Streak: {streak > 1 ? Math.min(streak * 5, 25) : 0})
+              (Base: {basePoints} + Time: {pointsEarned - basePoints - (streak > 1 ? Math.min(streak * 5, 25) : 0)} + Streak: {streak > 1 ? Math.min(streak * 5, 25) : 0})
             </div>
           </div>
         )}

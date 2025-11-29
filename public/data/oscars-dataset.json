@@ -1,0 +1,598 @@
+{
+  "generatedAt": "2025-11-28T23:32:41.120Z",
+  "source": "nominees.json with optional enrichment from TMDb and Wikipedia",
+  "enrichment": {
+    "tmdb": false,
+    "wikipedia": true
+  },
+  "categories": {
+    "Best Picture": [
+      "Anora",
+      "The Brutalist",
+      "A Complete Unknown",
+      "Conclave",
+      "Dune: Part Two",
+      "Emilia Pérez",
+      "I'm Still Here",
+      "Nickel Boys",
+      "The Substance",
+      "Wicked"
+    ],
+    "Actor in a Leading Role": [
+      {
+        "name": "Adrien Brody",
+        "movie": "The Brutalist"
+      },
+      {
+        "name": "Timothée Chalamet",
+        "movie": "A Complete Unknown"
+      },
+      {
+        "name": "Colman Domingo",
+        "movie": "Sing Sing"
+      },
+      {
+        "name": "Ralph Fiennes",
+        "movie": "Conclave"
+      },
+      {
+        "name": "Sebastian Stan",
+        "movie": "The Apprentice"
+      }
+    ],
+    "Actress in a Leading Role": [
+      {
+        "name": "Cynthia Erivo",
+        "movie": "Wicked"
+      },
+      {
+        "name": "Karla Sofía Gascón",
+        "movie": "Emilia Pérez"
+      },
+      {
+        "name": "Mikey Madison",
+        "movie": "Anora"
+      },
+      {
+        "name": "Demi Moore",
+        "movie": "The Substance"
+      },
+      {
+        "name": "Fernanda Torres",
+        "movie": "I'm Still Here"
+      }
+    ],
+    "Actor in a Supporting Role": [
+      {
+        "name": "Yura Borisov",
+        "movie": "Anora"
+      },
+      {
+        "name": "Kieran Culkin",
+        "movie": "A Real Pain"
+      },
+      {
+        "name": "Edward Norton",
+        "movie": "A Complete Unknown"
+      },
+      {
+        "name": "Guy Pearce",
+        "movie": "The Brutalist"
+      },
+      {
+        "name": "Jeremy Strong",
+        "movie": "The Apprentice"
+      }
+    ],
+    "Actress in a Supporting Role": [
+      {
+        "name": "Monica Barbaro",
+        "movie": "A Complete Unknown"
+      },
+      {
+        "name": "Ariana Grande",
+        "movie": "Wicked"
+      },
+      {
+        "name": "Felicity Jones",
+        "movie": "The Brutalist"
+      },
+      {
+        "name": "Isabella Rossellini",
+        "movie": "Conclave"
+      },
+      {
+        "name": "Zoe Saldaña",
+        "movie": "Emilia Pérez"
+      }
+    ],
+    "Animated Feature Film": [
+      {
+        "title": "Flow",
+        "directors": [
+          "Gints Zilbalodis",
+          "Matīss Kaža"
+        ],
+        "producers": [
+          "Ron Dyens",
+          "Gregory Zalcman"
+        ]
+      },
+      {
+        "title": "Inside Out 2",
+        "directors": [
+          "Kelsey Mann"
+        ],
+        "producers": [
+          "Mark Nielsen"
+        ]
+      },
+      {
+        "title": "Memoir of a Snail",
+        "directors": [
+          "Adam Elliot"
+        ],
+        "producers": [
+          "Liz Kearney"
+        ]
+      },
+      {
+        "title": "Wallace & Gromit: Vengeance Most Fowl",
+        "directors": [
+          "Nick Park",
+          "Merlin Crossingham"
+        ],
+        "producers": [
+          "Richard Beek"
+        ]
+      },
+      {
+        "title": "The Wild Robot",
+        "directors": [
+          "Chris Sanders"
+        ],
+        "producers": [
+          "Jeff Hermann"
+        ]
+      }
+    ],
+    "Documentary Feature Film": [
+      {
+        "title": "Black Box Diaries",
+        "directors": [
+          "Shiori Itō",
+          "Eric Nyari"
+        ],
+        "producers": [
+          "Hanna Aqvilin"
+        ]
+      },
+      {
+        "title": "No Other Land",
+        "directors": [
+          "Basel Adra",
+          "Rachel Szor",
+          "Hamdan Ballal",
+          "Yuval Abraham"
+        ],
+        "producers": []
+      },
+      {
+        "title": "Porcelain War",
+        "directors": [
+          "Brendan Bellomo",
+          "Slava Leontyev"
+        ],
+        "producers": [
+          "Aniela Sidorska",
+          "Paula DuPré Pesmen"
+        ]
+      },
+      {
+        "title": "Soundtrack to a Coup d'Etat",
+        "directors": [
+          "Johan Grimonprez",
+          "Daan Milius"
+        ],
+        "producers": [
+          "Rémi Grellety"
+        ]
+      },
+      {
+        "title": "Sugarcane",
+        "directors": [
+          "Julian Brave NoiseCat",
+          "Emily Kassie"
+        ],
+        "producers": [
+          "Kellen Quinn"
+        ]
+      }
+    ],
+    "International Feature Film": [
+      {
+        "title": "I'm Still Here",
+        "country": "Brazil",
+        "director": "Walter Salles"
+      },
+      {
+        "title": "The Girl with the Needle",
+        "country": "Denmark",
+        "director": "Magnus von Horn"
+      },
+      {
+        "title": "Emilia Pérez",
+        "country": "France",
+        "director": "Jacques Audiard"
+      },
+      {
+        "title": "The Seed of the Sacred Fig",
+        "country": "Germany",
+        "director": "Mohammad Rasulof"
+      },
+      {
+        "title": "Flow",
+        "country": "Latvia",
+        "director": "Gints Zilbalodis"
+      }
+    ],
+    "Directing": [
+      {
+        "name": "Sean Baker",
+        "movie": "Anora"
+      },
+      {
+        "name": "Brady Corbet",
+        "movie": "The Brutalist"
+      },
+      {
+        "name": "James Mangold",
+        "movie": "A Complete Unknown"
+      },
+      {
+        "name": "Jacques Audiard",
+        "movie": "Emilia Pérez"
+      },
+      {
+        "name": "Coralie Fargeat",
+        "movie": "The Substance"
+      }
+    ],
+    "Cinematography": [
+      {
+        "name": "Lol Crawley",
+        "movie": "The Brutalist"
+      },
+      {
+        "name": "Greig Fraser",
+        "movie": "Dune: Part Two"
+      },
+      {
+        "name": "Paul Guilhaume",
+        "movie": "Emilia Pérez"
+      },
+      {
+        "name": "Ed Lachman",
+        "movie": "Maria"
+      },
+      {
+        "name": "Jarin Blaschke",
+        "movie": "Nosferatu"
+      }
+    ],
+    "Costume Design": [
+      {
+        "name": "Paul Tazewell",
+        "movie": "Wicked"
+      },
+      {
+        "name": "Arianne Phillips",
+        "movie": "A Complete Unknown"
+      },
+      {
+        "name": "Lisy Christl",
+        "movie": "Conclave"
+      },
+      {
+        "name": "Janty Yates and Dave Crossman",
+        "movie": "Gladiator II"
+      },
+      {
+        "name": "Linda Muir",
+        "movie": "Nosferatu"
+      }
+    ],
+    "Film Editing": [
+      {
+        "name": "Sean Baker",
+        "movie": "Anora"
+      },
+      {
+        "name": "David Jancsó",
+        "movie": "The Brutalist"
+      },
+      {
+        "name": "Nick Emerson",
+        "movie": "Conclave"
+      },
+      {
+        "name": "Juliette Welfling",
+        "movie": "Emilia Pérez"
+      }
+    ]
+  },
+  "movies": [
+    {
+      "title": "Anora",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "The Brutalist",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "A Complete Unknown",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Conclave",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Dune: Part Two",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Emilia Pérez",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "I'm Still Here",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Nickel Boys",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "The Substance",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Wicked",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Sing Sing",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "The Apprentice",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "A Real Pain",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Maria",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Nosferatu",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "title": "Gladiator II",
+      "tmdb": null,
+      "wikipedia": null
+    }
+  ],
+  "people": [
+    {
+      "name": "Adrien Brody",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Timothée Chalamet",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Colman Domingo",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Ralph Fiennes",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Sebastian Stan",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Cynthia Erivo",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Karla Sofía Gascón",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Mikey Madison",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Demi Moore",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Fernanda Torres",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Yura Borisov",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Kieran Culkin",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Edward Norton",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Guy Pearce",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Jeremy Strong",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Monica Barbaro",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Ariana Grande",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Felicity Jones",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Isabella Rossellini",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Zoe Saldaña",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Sean Baker",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Brady Corbet",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "James Mangold",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Jacques Audiard",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Coralie Fargeat",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Lol Crawley",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Greig Fraser",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Paul Guilhaume",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Ed Lachman",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Jarin Blaschke",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Paul Tazewell",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Arianne Phillips",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Lisy Christl",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Janty Yates and Dave Crossman",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Linda Muir",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "David Jancsó",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Nick Emerson",
+      "tmdb": null,
+      "wikipedia": null
+    },
+    {
+      "name": "Juliette Welfling",
+      "tmdb": null,
+      "wikipedia": null
+    }
+  ]
+}
