@@ -11,6 +11,11 @@ export default defineConfig({
       './src/test/setup.ts',
       './src/test/vitestSetupEnv.ts'
     ],
+    exclude: [
+      'e2e/**',
+      '**/node_modules/**',
+      '**/dist/**',
+    ],
   },
   resolve: {
     alias: {
